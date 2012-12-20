@@ -1,35 +1,36 @@
 DEBUGFLAGS = 
 ifdef DEBUG
-DEBUGFLAGS = -g
+DEBUGFLAGS = -g -DDEBUG
 endif
 
 CCFLAGS = -std=c89 -pedantic-errors -Wall $(DEBUGFLAGS)
 LDFLAGS = 
+LD = $(CC)
 SFLAGS = -weak -booltype BOOL -boolfalse FALSE -booltrue TRUE +predboolint +noret +usedef +infloops +casebreak -initallelements -incompletetype -fixedformalarray
 OUTPUT = ppr-huffman
 BUILDDIR = build/
-SRC = main.c
+SRC = main.c bit_access.c
 
-all: $(OUTPOUT)
+# das endprodukt linken
+$(OUTPUT): $(addprefix $(BUILDDIR), $(addsuffix .o, $(SRC)))
+# alles zusammen linken, $^ sind alle vorraussetzungen, $@ das ziel
+	@echo "  (LD) $^ -> $@"
+	@$(LD) $(LDFLAGS) $^ -o $@
+
+all: clean $(OUTPUT)
 
 splint:
 	@splint $(SFLAGS) *.c *.h
 
-# das endprodukt linken
-$(OUTPUT): $(addprefix $(BUILDDIR)/, $(addsuffix .o, $(SRC)))
-	# alles zusammen linken, $^ sind alle vorraussetzungen, $@ das ziel
-	@echo $^
-	$(LD) $(LDFLAGS) $^ -o $@
-
 # einzelne quellen compilen
-$(BUILDDIR)/%.c.o: %.c
+$(BUILDDIR)%.c.o: %.c
 	-@mkdir -p $(BUILDDIR)
-	@echo $^
-	$(CC) $(CCFLAGS) -c $^ -o $@
+	@echo "  (CC) $^"
+	@$(CC) $(CCFLAGS) -c $^ -o $@
 
 clean:
-	-rm $(OUTPUT)
-	-rm -rf $(BUILDDIR)
+	-@rm -rf $(OUTPUT) $(BUILDDIR)
+	-@echo "clean!"
 	
 debug:
 	-@make clean

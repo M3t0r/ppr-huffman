@@ -15,3 +15,9 @@
 *.exe
 *.out
 *.app
+ppr-huffman
+
+# heißen die so?
+thumbs.db
+.DS_Store
+build/

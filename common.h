@@ -9,16 +9,14 @@ typedef enum {
 typedef unsigned char BYTE;
 
 
-#ifndef ENSURE_ENOUGH_MEMORY
+#ifndef ASSERT_NULL
 #include <stdlib.h>
 #include <stdio.h>
-#define ENSURE_ENOUGH_MEMORY(VAR, FUNCTION) \
-{ \
-	if (VAR == NULL) { \
-		printf(FUNCTION ": not enough memory\n"); \
-		exit(EXIT_FAILURE); \
-	} \
-}
+#define ASSERT_ALLOC(ptr)\
+    if (ptr == NULL) {\
+        printf("Could not allocate memory block in %s:%i\nAborting\n", __FILE__, __LINE__);\
+        exit(EXIT_FAILURE);\
+    }
 #endif
 
 #ifdef DEBUG
