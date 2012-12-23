@@ -9,7 +9,7 @@ typedef enum {
 typedef unsigned char BYTE;
 
 
-#ifndef ASSERT_NULL
+#ifndef ASSERT_ALLOC
 #include <stdlib.h>
 #include <stdio.h>
 #define ASSERT_ALLOC(ptr)\
