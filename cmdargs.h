@@ -5,7 +5,7 @@
 
 typedef struct {
     BOOL    malformed;
-    char*   malformed_reason;
+    char*   malformed_reason; /* gibt bestimmt hübschere varianten hierfür... */
     BOOL    show_help;
 } cmdargs;
 
