@@ -1,8 +1,8 @@
 #include "bitarray.h"
 
-BOOL bitarray_get_bit(BITARRAY ba, int index)
+BOOL bitarray_get_bit(BITARRAY *ba, int index)
 {
-    return (ba.array[index / 8] >> index % 8) & 1;
+    return (ba->array[index / 8] >> index % 8) & 1;
 }
 
 /*void set_bit(BYTE *ptr, int index, BOOL value)
