@@ -6,7 +6,7 @@
 
 
 typedef struct {
-    BYTE *array;
+    BYTE *data;
     unsigned int capacity;
     unsigned int length;
 } BITARRAY;
@@ -18,7 +18,7 @@ BITARRAY *bitarray_new();
 /**
  * frees the bitarray and  al it's reserved heap space
  */
-void bitarray_free(BITARRAY *ba);
+void bitarray_free(BITARRAY **ba);
 
 void bitarray_push(BITARRAY *ba, BOOL d);
 void bitarray_push_byte(BITARRAY *ba, BYTE d);
