@@ -1,7 +1,9 @@
 #ifndef _CODEBUCH_H
 #define _CODEBUCH_H
 
+/* mein stub, muss noch durch bitarray.h ersetzt werden. */
 #include "my_bitfile.h"
+#include "common.h"
 
 /**
  * Typdefinition eines Codebuchs.
@@ -10,10 +12,10 @@ typedef struct _CODEBUCH CODEBUCH;
 
 /**
  * Erstellt ein neues Codebuch.
- * @param f unsigned int Die Anzahlen aller Zeichen.
+ * @param frequencies unsigned int[256] Die Anzahlen aller Zeichen.
  * @return CODEBUCH* Das neue Codebuch oder NULL im Fehlerfall.
  */
-extern CODEBUCH* codebuch_new_from_frequency(unsigned int f[256]);
+extern CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256]);
 
 /**
  * Erstellt eine neues Codebuch aus einem Bitarray.
@@ -51,6 +53,13 @@ extern unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, un
  * @return BITARRAY* Das Codebuch als Bitarray.
  */
 extern BITARRAY* codebuch_structure(CODEBUCH* p_cb);
+
+/**
+ * Prüft, ob der zuletzt von codebuch_char_for_code zurückgegebene char ein Fehler war.
+ * @param p_cb CODEBUCH* Das Codebuch.
+ * @return BOOL TRUE, wenn der letzte zurückgegebene char ein Fehler war, FALSE sonst.
+ */
+extern BOOL codebuch_last_char_was_error(CODEBUCH* p_cb);
 
 #ifdef TEST
 /**
