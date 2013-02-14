@@ -12,10 +12,14 @@ CODE* code_new(unsigned char z, BITARRAY* p_bitarray)
 	ASSERT_ALLOC(retval);
 	
 	retval->zeichen = z;
-	retval->code 	= bitarray_new();
-	for (i = 0; i < bitarray_length(p_bitarray); i++)
+	retval->code 	= NULL;
+	if (p_bitarray != NULL)
 	{
-		bitarray_push(retval->code, bitarray_get_bit(p_bitarray, i));
+		retval->code 	= bitarray_new();
+		for (i = 0; i < bitarray_length(p_bitarray); i++)
+		{
+			bitarray_push(retval->code, bitarray_get_bit(p_bitarray, i));
+		}
 	}
 	
 	return retval;
@@ -77,7 +81,7 @@ BOOL code_equals(CODE* c1, CODE* c2)
 {
 	if (c1->zeichen != c2->zeichen)
 	{
-		printf("zeichen ist unterschiedlich ('%d' <-> '%d')\n", c1->zeichen, c2->zeichen);
+		/*printf("zeichen ist unterschiedlich (0x%x <-> 0x%x)\n", c1->zeichen, c2->zeichen);*/
 		return FALSE;
 	}
 	else

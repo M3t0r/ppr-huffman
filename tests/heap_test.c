@@ -1,5 +1,6 @@
 #include "testmain.h"
 #include "../heap.h"
+#include <string.h>
 
 char* name_of_testsuit = "heap";
 
@@ -59,14 +60,13 @@ BOOL test_free(void)
 BOOL test_size(void)
 {
 	HEAP* test_heap = heap_new((CMP_FCT)cmp_char);
-	return (heap_size(test_heap) == 0);
+	return (heap_get_size(test_heap) == 0);
 }
 
 BOOL test_push(void)
 {
 	int i;
 	char* orig_str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	char* new_str = malloc(strlen(orig_str) * sizeof(char) + 1);
 	HEAP* test_heap = heap_new((CMP_FCT)cmp_char);
 	
 	for (i = 0; i < (int)strlen(orig_str); i++)
@@ -77,7 +77,7 @@ BOOL test_push(void)
 		heap_push(test_heap, (void*)tmp);
 	}
 	
-	return (heap_size(test_heap) == strlen(orig_str));
+	return (heap_get_size(test_heap) == strlen(orig_str));
 }
 
 BOOL test_push_und_pop_chars(void)
@@ -96,7 +96,7 @@ BOOL test_push_und_pop_chars(void)
 	}
 	
 	i = 0;
-	while (heap_size(test_heap) > 0)
+	while (heap_get_size(test_heap) > 0)
 	{
 		char tmp = ((char*)heap_pop(test_heap))[0];
 		new_str[i] = tmp;
@@ -124,7 +124,7 @@ BOOL test_push_und_pop_ints(void)
 	}
 	
 	i = 0;
-	while (heap_size(test_heap) > 0)
+	while (heap_get_size(test_heap) > 0)
 	{
 		int* tmp = (int*)heap_pop(test_heap);
 		new_int[i] = *tmp;
@@ -145,7 +145,6 @@ BOOL test_get_element(void)
 {
 	int i;
 	char* orig_str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	char* new_str = malloc(strlen(orig_str) * sizeof(char) + 1);
 	HEAP* test_heap = heap_new((CMP_FCT)cmp_char);
 	
 	for (i = 0; i < (int)strlen(orig_str); i++)
