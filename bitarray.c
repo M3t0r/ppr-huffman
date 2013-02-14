@@ -112,7 +112,7 @@ BYTE bitarray_get_byte(BITARRAY *ba, int index)
     }
 }
 
-BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba1)
+BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 {
 	if (ba1 == NULL && ba2 == NULL)
 		return TRUE;
