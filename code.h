@@ -18,6 +18,12 @@ typedef struct _CODE CODE;
 extern CODE* code_new(unsigned char z, BITARRAY* p_bitarray);
 
 /**
+ * Gibt den Code frei.
+ * @param pp_code CODE** Ein Zeiger auf den freizugebenden Code.
+ */
+extern void code_free(CODE** pp_code);
+
+/**
  * Gibt das Zeichen des Codes zurück.
  * @param p_code CODE* Der Code.
  * @return unsigned char Das Zeichen des Codes.

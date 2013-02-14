@@ -160,7 +160,7 @@ CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256])
 		heap_push(H, p_new_freq);
 	}
 	
-	retval = codebuch_new(heap_get_element(H, 1), count, frequencies);
+	retval = codebuch_new(heap_get_element(H, 0), count, frequencies);
 	build_codebuch(retval->baum, bitarray_new(), retval);
 	
 	return retval;
@@ -349,9 +349,6 @@ static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 {
 	if ((p_cb1 == NULL) && (p_cb2 == NULL))
 	{
-	#ifdef DEBUG
-		printf("p_cb1 und p_cb2 NULL\n");
-	#endif
 		return TRUE;
 	}
 	else if (p_cb1 == NULL)
@@ -389,9 +386,6 @@ BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 {
 	if ((p_cb1 == NULL) && (p_cb2 == NULL))
 	{
-	#ifdef DEBUG
-		printf("p_cb1 und p_cb2 NULL\n");
-	#endif
 		return TRUE;
 	}
 	else if (p_cb1 == NULL)

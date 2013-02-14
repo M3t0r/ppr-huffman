@@ -1,8 +1,6 @@
 #include "heap.h"
 #include "common.h"
 
-#include "frequency.h"
-
 #define STEPS	10
 
 struct _HEAP 
@@ -157,7 +155,8 @@ int heap_contains(HEAP* p_heap, void* element, CMP_FCT cmp_f)
 }
 
 void* heap_get_element(HEAP* p_heap, int index) 
-{	
+{
+	index++;
 	if ((p_heap != NULL) && (p_heap->elements != NULL) && (index > 0) && (index <= p_heap->used)) 
 	{
 		return p_heap->elements[index];

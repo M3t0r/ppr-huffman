@@ -21,6 +21,19 @@ CODE* code_new(unsigned char z, BITARRAY* p_bitarray)
 	return retval;
 }
 
+void code_free(CODE** pp_code)
+{
+	if ((pp_code != NULL) && (*pp_code != NULL))
+	{
+		if ((*pp_code)->code != NULL) {
+			bitarray_free(&((*pp_code)->code));
+		}
+		free((*pp_code)->code);
+		free(*pp_code);
+		*pp_code = NULL;
+	}
+}
+
 unsigned char code_get_zeichen(CODE* p_code)
 {
 	if (p_code == NULL)
@@ -64,7 +77,7 @@ BOOL code_equals(CODE* c1, CODE* c2)
 {
 	if (c1->zeichen != c2->zeichen)
 	{
-		printf("code ist unterschiedlich ('%d' <-> '%d')\n", c1->zeichen, c2->zeichen);
+		printf("zeichen ist unterschiedlich ('%d' <-> '%d')\n", c1->zeichen, c2->zeichen);
 		return FALSE;
 	}
 	else

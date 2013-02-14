@@ -1,6 +1,6 @@
 #!/bin/bash
 
-suits="bitarray bitfile"
+suits="bitarray bitfile heap code"
 
 errors=0
 

@@ -127,6 +127,6 @@ BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 		return FALSE;
 
 	else
-		return !memcmp(ba1->data, ba2->data, ba1->length);
+		return !memcmp(ba1->data, ba2->data, ba1->length / 8);
 
 }

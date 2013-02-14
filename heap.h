@@ -48,7 +48,7 @@ extern int heap_get_size(HEAP* p_heap);
 /**
  * Gibt das Element am gewünschten Index zurück.
  * @param p_heap HEAP* Der Heap.
- * @param index int Der gewünschte Index.
+ * @param index int Der gewünschte Index (0-basiert).
  * @return void* NULL, falls der Index invalide war, das gewünschte Element sonst.
  */
 extern void* heap_get_element(HEAP* p_heap, int index);
