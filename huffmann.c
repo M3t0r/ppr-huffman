@@ -62,7 +62,7 @@ void compress(char *in_filename, char *out_filename)
     while(!bitfile_is_eof(p_input)) 
     {
         byte = bitfile_read_byte(p_input);
-        if(!(byte == 0 && bitfile_last_read_was_error(p_input)))
+        if(!(byte == 0 && bitfile_is_eof(p_input)))
         {
             anzahl_zeichen[byte]++;
             ist_leer = FALSE;
@@ -91,7 +91,7 @@ void compress(char *in_filename, char *out_filename)
             code = codebuch_code_for_char(p_codebuch, byte);
             if(code == 0 && codebuch_last_char_was_error(p_codebuch)) 
             {
-                fprintf(stderr, "Es ist ein Fehlerb aufgetreten.");
+                fprintf(stderr, "Es ist ein Fehler aufgetreten.");
                 exit(EXIT_FAILURE);
             }
             bitfile_write_bitarray(p_output, code);

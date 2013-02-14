@@ -23,7 +23,11 @@
  * Typdefinitionen
  *****************************************************************************/
 typedef struct {
-    
+    FILE *fd;
+    BYTE buffer;
+    int buffer_index;
+    BOOL eof;
+    BOOL write_mode;
 } BITFILE;
 
 /*****************************************************************************
