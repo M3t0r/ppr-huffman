@@ -9,7 +9,7 @@
  * Dieses Modul dient zum Starten der (De)Komprimierung einer Datei.
  * 
  * File:   main.c
- * Author: Simon Lutz Brüggen, Jan-Hendrick Frintrop, Tim Ziegler
+ * Author: Simon Lutz Brüggen, Jan-Hendrik Frintrop, Tim Ziegler
  *
  * Created on 2. Februar 2012, 15:24
  */
