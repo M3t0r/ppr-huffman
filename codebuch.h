@@ -12,8 +12,7 @@
 #ifndef _CODEBUCH_H
 #define _CODEBUCH_H
 
-/* mein stub, muss noch durch bitarray.h ersetzt werden. */
-#include "my_bitfile.h"
+#include "bitarray.h"
 #include "common.h"
 
 /**
@@ -72,7 +71,6 @@ extern BITARRAY* codebuch_structure(CODEBUCH* p_cb);
  */
 extern BOOL codebuch_last_char_was_error(CODEBUCH* p_cb);
 
-#ifdef TEST
 /**
  * Prüft, ob 2 Codebücher gleich sind.
  * @param p_cb1 CODEBUCH* Das eine Codebuch.
@@ -80,13 +78,5 @@ extern BOOL codebuch_last_char_was_error(CODEBUCH* p_cb);
  * @return BOOL TRUE, falls cb1 und cb2 gleich sind, FALSE sonst.
  */
 extern BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2);
-
-/**
- * Gibt die Größe des Codebuchs zurück.
- * @param p_cb CODEBUCH* Das Codebuch.
- * @return unsigned int Die Größe des Codebuchs.
- */
-extern unsigned int codebuch_size(CODEBUCH* p_cb);
-#endif
 
 #endif

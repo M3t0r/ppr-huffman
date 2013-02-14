@@ -1,5 +1,4 @@
 #include "code.h"
-#include "common.h"
 
 struct _CODE {
 	unsigned char 	zeichen;
@@ -14,7 +13,7 @@ CODE* code_new(unsigned char z, BITARRAY* p_bitarray)
 	
 	retval->zeichen = z;
 	retval->code 	= bitarray_new();
-	for (i = 0; i < bitarray_size(p_bitarray); i++)
+	for (i = 0; i < bitarray_length(p_bitarray); i++)
 	{
 		bitarray_push(retval->code, bitarray_get_bit(p_bitarray, i));
 	}
@@ -61,7 +60,6 @@ int cmp_codes_zeichen(CODE* p_code1, CODE* p_code2)
     			: -1));
 }
 
-#ifdef TEST
 BOOL code_equals(CODE* c1, CODE* c2)
 {
 	if (c1->zeichen != c2->zeichen)
@@ -78,4 +76,3 @@ BOOL code_equals(CODE* c1, CODE* c2)
 	}
 	return TRUE;
 }
-#endif

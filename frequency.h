@@ -93,7 +93,6 @@ extern int cmp_frequency_haeufigkeiten(FREQUENCY* p_frep1, FREQUENCY* p_frep2);
  */
 extern unsigned int frequency_get_height(FREQUENCY* p_freq);
 
-#ifdef TEST
 /**
  * Gibt die übergebene Frequenz als Baum aus.
  * @param p_freq FREQUENCY* Die auszugebende Frequenz.
@@ -109,6 +108,5 @@ extern void frequency_print(FREQUENCY* p_freq, int depth, int index);
  * @return BOOL TRUE, falls p_frep1 und p_frep2 gleich sind, FALSE sonst.
  */
 extern BOOL frequency_equals(FREQUENCY* p_freq1, FREQUENCY* p_freq2);
-#endif
 
 #endif
