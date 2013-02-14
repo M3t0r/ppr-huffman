@@ -89,6 +89,12 @@ BOOL bitarray_get_bit(BITARRAY *ba, int index);
  */
 BYTE bitarray_get_byte(BITARRAY *ba, int index);
 
-
+/**
+ * Gibt zurueck, ob die beiden Bitarrays gleich sind.
+ * @param ba1 Das eine Bitarray.
+ * @param ba2 Das andere Bitarray.
+ * @return TRUE falls beide Bitarrays gleich sind, FALSE sonst.
+ */
+BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba1)
 
 #endif

@@ -111,3 +111,22 @@ BYTE bitarray_get_byte(BITARRAY *ba, int index)
         return byte;
     }
 }
+
+BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba1)
+{
+	if (ba1 == NULL && ba2 == NULL)
+		return TRUE;
+
+	else if (ba1 == NULL)
+		return FALSE;
+		
+	else if (ba2 == NULL)
+		return FALSE;
+
+	else if (ba1->length != ba2->length)
+		return FALSE;
+
+	else
+		return !memcmp(ba1->data, ba2->data, ba1->length);
+
+}
