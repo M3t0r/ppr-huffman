@@ -76,7 +76,7 @@ BOOL test_read_bitarray()
     result = bitarray_length(ba) == 17
         && bitarray_get_byte(ba, 0) == 'F'
         && bitarray_get_byte(ba, 8) == 'r'
-        && bitarray_get_bit(ba, 9) == FALSE;
+        && bitarray_get_bit(ba, 16) == FALSE;
         
     bitarray_free(&ba);
     bitfile_close(&fd);

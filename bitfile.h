@@ -90,7 +90,7 @@ void bitfile_write_byte(BITFILE *fd, BYTE d);
  * @param fd Bitfile, in das geschrieben werden soll.
  * @param d Zu schreibendes Bitarray.
  */
-void bitfile_write_bitarray(BITFILE *fd, BITARRAY d);
+void bitfile_write_bitarray(BITFILE *fd, BITARRAY *ba);
 
 /**
  * 
