@@ -62,6 +62,13 @@ void compress(char *in_filename, char *out_filename)
     while(!bitfile_is_eof(p_input)) 
     {
         byte = bitfile_read_byte(p_input);
+        
+        if(byte == 0 && bitfile_last_read_was_error(p_input))
+        {
+            perror("Fehler beim lesen der Eingabedatei");
+            exit(EXIT_FAILURE);
+        }
+                
         if(!(byte == 0 && bitfile_is_eof(p_input)))
         {
             anzahl_zeichen[byte]++;
