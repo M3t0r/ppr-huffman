@@ -2,9 +2,6 @@
 #include "heap.h"
 #include "code.h"
 #include "frequency.h"
-#include "common.h"
-
-#define MAX(a, b) 			(((a) >= (b)) ? (a) : (b))
 
 struct _CODEBUCH 
 {
@@ -51,7 +48,7 @@ static void add_code(CODEBUCH* p_cb, CODE* p_code)
  */
 static void build_codebuch(FREQUENCY* p_freq, BITARRAY* p_prev_path, CODEBUCH* p_cb)
 {
-	unsigned int len = bitarray_size(p_prev_path);
+	unsigned int len = bitarray_length(p_prev_path);
 	
 	if ((p_freq == NULL) || (p_prev_path == NULL) || (p_cb == NULL))
 	{
@@ -174,7 +171,7 @@ CODEBUCH* codebuch_new_from_structur(BITARRAY* p_ba)
 	unsigned int frequencies[256];
 	unsigned int i;
 	
-	if (bitarray_size(p_ba) < 256 * 32 /* aka 1024 Byte */)
+	if (bitarray_length(p_ba) < 256 * 32 /* aka 1024 Byte */)
 	{
 		printf("Bitarray zu klein für Codebuch!\n");
 		return NULL;
@@ -232,7 +229,7 @@ BITARRAY* codebuch_code_for_char(CODEBUCH* p_cb, unsigned char c)
 			BITARRAY* retval = bitarray_new();
 			unsigned int i;
 			
-			for (i = 0; i < bitarray_size(tmp); i++)
+			for (i = 0; i < bitarray_length(tmp); i++)
 			{
 				bitarray_push(retval, bitarray_get_bit(tmp, i));
 			}
@@ -262,7 +259,7 @@ unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned 
 		return 0;
 	}
 	
-	if ((p_code == NULL) || (bitarray_size(p_code) <= 0)) {
+	if ((p_code == NULL) || (bitarray_length(p_code) <= 0)) {
 		p_cb->last_char_was_error = TRUE;
 		return 0;
 	}
@@ -276,7 +273,8 @@ unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned 
 	
 	i = 0;
 	tmp = p_cb->baum;
-	while ((i <= bitarray_size(p_code)) && (tmp != NULL))
+	/* < oder <= ???*/
+	while ((i <= bitarray_length(p_code)) && (tmp != NULL))
 	{
 		if (frequency_is_leaf(tmp))
 		{
@@ -341,7 +339,6 @@ BOOL codebuch_last_char_was_error(CODEBUCH* p_cb)
 	}
 }
 
-#ifdef TEST
 /**
  * Überprüft die Codes von 2 Codebüchern auf Gleichheit.
  * @param p_cb1 CODEBUCH* Das eine Codebuch.
@@ -422,4 +419,3 @@ BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 		return TRUE;
 	}
 }
-#endif

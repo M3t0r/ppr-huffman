@@ -1,7 +1,8 @@
 #ifndef _CODE_H
 #define _CODE_H
 
-#include "my_bitfile.h"
+#include "bitarray.h"
+#include "common.h"
 
 /**
  * Typdefinition eines Codes.
@@ -38,7 +39,6 @@ extern BITARRAY* code_get_code(CODE* p_code);
  */
 extern int cmp_codes_zeichen(CODE* p_code1, CODE* p_code2);
 
-#ifdef TEST
 /**
  * Prüft, ob 2 Codes gleich sind.
  * @param c1 CODE* Der eine Code.
@@ -46,6 +46,5 @@ extern int cmp_codes_zeichen(CODE* p_code1, CODE* p_code2);
  * @return BOOL TRUE, falls c1 und c2 gleich sind, FALSE sonst.
  */
 extern BOOL code_equals(CODE* c1, CODE* c2);
-#endif
 
 #endif

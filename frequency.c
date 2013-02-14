@@ -1,7 +1,5 @@
 #include "frequency.h"
 
-/*#define USE_FREQUENCY_GET_SUMME*/
-
 #define MAX(a, b) (((a) >= (b)) ? (a) : (b))
 
 struct _FREQUENCY 
@@ -94,7 +92,7 @@ BOOL frequency_is_leaf(FREQUENCY* p_freq)
 	return ((p_freq != NULL) && (p_freq->left == NULL) && (p_freq->right == NULL));
 }
 
-#ifdef USE_FREQUENCY_GET_SUMME
+/*@unused@*/
 /**
  * Gibt die Summe der Anzahlen der Frequenz und ihrer Kinder zurück.
  * @param p_freq FREQUENCY* Die Frequenz.
@@ -116,13 +114,9 @@ static unsigned int frequency_get_summe(FREQUENCY* p_freq)
             ? 0
             : p_freq->anzahl + frequency_get_summe(p_freq->left) + frequency_get_summe(p_freq->right));*/
 }
-#endif
 
 int cmp_frequency_haeufigkeiten(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
 {
-    unsigned int summe1 = 0;
-    unsigned int summe2 = 0;
-    
     if (p_freq1 == NULL) 
     {
         return -1;
@@ -132,18 +126,10 @@ int cmp_frequency_haeufigkeiten(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
     {
         return 1;
     }
-    
-#ifdef USE_FREQUENCY_GET_SUMME
-	summe1 = frequency_get_summe(p_freq1);
-    summe2 = frequency_get_summe(p_freq2);
-#else
-    summe1 = p_freq1->anzahl;
-    summe2 = p_freq2->anzahl;
-#endif
-    
-    return ((summe1 == summe2) 
+
+    return ((p_freq1->anzahl == p_freq2->anzahl) 
             ? 0 
-            : ((summe1 > summe2) 
+            : ((p_freq1->anzahl > p_freq2->anzahl) 
                 ? 1 
                 : -1));
 }
@@ -176,7 +162,6 @@ unsigned int frequency_get_height(FREQUENCY* p_freq)
 			: MAX(frequency_get_height(p_freq->left), frequency_get_height(p_freq->right)) + 1;
 }
 
-#ifdef TEST
 BOOL frequency_equals(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
 {
 	if (p_freq1 == NULL && p_freq2 == NULL)
@@ -213,4 +198,3 @@ BOOL frequency_equals(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
 				&& frequency_equals(p_freq1->right, p_freq2->right));*/
 	}
 }
-#endif
