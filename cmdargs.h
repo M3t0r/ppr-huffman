@@ -5,7 +5,7 @@
  * aufzubereiten.
  * 
  * File:   cmdargs.h
- * Author: Simon Lutz Brüggen, Jan-Hendrick Frintrop, Tim Ziegler
+ * Author: Simon Lutz Brüggen, Jan-Hendrik Frintrop, Tim Ziegler
  *
  * Created on 2. Februar 2012, 15:24
  */
