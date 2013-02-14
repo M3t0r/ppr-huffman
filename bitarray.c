@@ -31,7 +31,7 @@ void bitarray_free(BITARRAY **ba)
 {
     free((*ba)->data);
     free((*ba));
-    ba = NULL;
+    *ba = NULL;
 }
 
 
@@ -59,11 +59,14 @@ void bitarray_push(BITARRAY *ba, BOOL bit)
     if(ba->length >= ba->capacity)
         bitarray_grow(ba);
         
-    mask = 0x01 << (index % 8);
-    ba->data[index / 8] =  (ba->data[index / 8] & ~mask) | (bit << (index % 8));
+    mask = 0x01 << (7-(index % 8));
+    ba->data[index / 8] =  (ba->data[index / 8] & ~mask) | (bit << (7-(index % 8)));
 }
 
-void bitarray_push_byte(BITARRAY *ba, BYTE d);
+void bitarray_push_byte(BITARRAY *ba, BYTE d)
+{
+
+}
 
 BOOL bitarray_pop(BITARRAY *ba)
 {
@@ -82,7 +85,7 @@ int bitarray_length(BITARRAY *ba)
 
 BOOL bitarray_get_bit(BITARRAY *ba, int index)
 {
-    return (ba->data[index / 8] >> index % 8) & 1;
+    return (ba->data[index / 8] >> (7-(index % 8))) & 1;
 }
 
 BYTE bitarray_get_byte(BITARRAY *ba, int index)

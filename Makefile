@@ -29,12 +29,15 @@ $(BUILDDIR)%.c.o: %.c
 	@$(CC) $(CCFLAGS) -c $^ -o $@
 
 
+test: tests/bitarray
+	@tests/test.sh
+
 
 tests/bitarray: bitarray.c tests/bitarray_test.c tests/testmain.c
-	$(CC) $(CCFLAGS) -g -DDEBUG $^ -o $@
+	@$(CC) $(CCFLAGS) -g -DDEBUG $^ -o $@
 
-tests/bitfile: bitarray.c bitfile.c tests/bitfile.c tests/testmain.c
-	$(CC) $(CCFLAGS) -g -DDEBUG $^ -o $@
+tests/bitfile: bitarray.c bitfile.c tests/bitfile_test.c tests/testmain.c
+	@$(CC) $(CCFLAGS) -g -DDEBUG $^ -o $@
 
 
 
@@ -48,4 +51,4 @@ debug:
 
 
 
-.PHONY: clean debug
+.PHONY: clean debug test

@@ -43,7 +43,7 @@ BITFILE *bitfile_open(char* path, BOOL w);
  * Schliesst ein Bitfile.
  * @param fd Zu schliessendes Bitfile.
  */
-void bitfile_close(BITFILE *fd);
+void bitfile_close(BITFILE **fd);
 
 /**
  * Liest das naechste Bit aus dem Bitfile.

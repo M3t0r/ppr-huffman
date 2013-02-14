@@ -16,7 +16,9 @@ for suit in $suits; do
         echo "Error(s) in  \"${suit}\""
     fi;
 done;
-echo ${errors}
+
+echo; echo;
+
 if [ $errors = 0 ]; then
     echo "All tests passed";
 else
