@@ -1,8 +1,16 @@
+
+/*****************************************************************************
+ * Includes
+ *****************************************************************************/
 #include "codebuch.h"
 #include "heap.h"
 #include "code.h"
 #include "frequency.h"
 
+
+/*****************************************************************************
+ * Strukturdefinitionen
+ *****************************************************************************/
 struct _CODEBUCH 
 {
 	FREQUENCY* 		baum;
@@ -12,11 +20,68 @@ struct _CODEBUCH
 	BOOL			last_char_was_error;
 };
 
+
+
+/*****************************************************************************
+ * Funktionsprototypen
+ *****************************************************************************/
 /**
  * Fügt einen neuen Code dem Codebuch hinzu.
  * @param p_cb CODEBUCH* Das Codebuch.
  * @param p_code CODE* Der Code.
  */
+static void add_code(CODEBUCH* p_cb, CODE* p_code);
+
+/**
+ * Baut das Codebuch rekursiv aus einem Frequenz-Baum auf.
+ * @param p_freq FREQUENCY* Der aktuelle Wurzelknoten.
+ * @param p_prev_path BITARRAY* Der bisherige Pfad.
+ * @param p_cb CODEBUCH* Das Codebuch.
+ */
+static void build_codebuch(FREQUENCY* p_freq, BITARRAY* p_prev_path, CODEBUCH* p_cb);
+
+/**
+ * Erzeugt ein Grundgerüst für ein neues Codebuch.
+ * @param p_baum FREQUENCY* Der Codebaum.
+ * @param num_codes int Die Anzahl der Codes. (Anzahl der verschiedenen vorhandenen Zeichen)
+ * @param freqs unsigned int[256] Die Anzahlen aller Zeichen.
+ * @return CODEBUCH* Das Grundgerüst des neuen Codebuchs.
+ */
+static CODEBUCH* codebuch_new(FREQUENCY* p_baum, int num_codes, unsigned int freqs[256]);
+
+/**
+ * Überprüft die Codes von 2 Codebüchern auf Gleichheit.
+ * @param p_cb1 CODEBUCH* Das eine Codebuch.
+ * @param p_cb2 CODEBUCH* Das andere Codebuch.
+ * @return BOOL TRUE falls die Codes beider Codebücher gleich sind, FALSE sonst.
+ */
+static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2);
+
+
+/*****************************************************************************
+ * Funktionsdefinitionen
+ *****************************************************************************/
+static CODEBUCH* codebuch_new(FREQUENCY* p_baum, int num_codes, unsigned int freqs[256])
+{
+	int i;
+    CODEBUCH* retval 	= malloc(sizeof(CODEBUCH));
+    ASSERT_ALLOC(retval);
+
+	retval->baum 		= p_baum;
+
+    retval->codes 		= malloc((num_codes * sizeof(void*)));
+    ASSERT_ALLOC(retval->codes);
+    retval->codes_used 	= 0;
+
+	for (i = 0; i < 256; i++)
+	{
+		retval->frequencies[i] = freqs[i];
+	}
+	
+    return retval;
+}
+
+
 static void add_code(CODEBUCH* p_cb, CODE* p_code) 
 {	
     if ((p_cb != NULL) && (p_cb->codes != NULL) && (p_code != NULL)) 
@@ -40,12 +105,7 @@ static void add_code(CODEBUCH* p_cb, CODE* p_code)
 	}
 }
 
-/**
- * Baut das Codebuch rekursiv aus einem Frequenz-Baum auf.
- * @param p_freq FREQUENCY* Der aktuelle Wurzelknoten.
- * @param p_prev_path BITARRAY* Der bisherige Pfad.
- * @param p_cb CODEBUCH* Das Codebuch.
- */
+
 static void build_codebuch(FREQUENCY* p_freq, BITARRAY* p_prev_path, CODEBUCH* p_cb)
 {
 	unsigned int len = bitarray_length(p_prev_path);
@@ -89,33 +149,6 @@ static void build_codebuch(FREQUENCY* p_freq, BITARRAY* p_prev_path, CODEBUCH* p
 			build_codebuch(frequency_get_right(p_freq), tmp_right, p_cb);
 		}
 	}
-}
-
-/**
- * Erzeugt ein Grundgerüst für ein neues Codebuch.
- * @param p_baum FREQUENCY* Der Codebaum.
- * @param num_codes int Die Anzahl der Codes. (Anzahl der verschiedenen vorhandenen Zeichen)
- * @param freqs unsigned int[256] Die Anzahlen aller Zeichen.
- * @return CODEBUCH* Das Grundgerüst des neuen Codebuchs.
- */
-static CODEBUCH* codebuch_new(FREQUENCY* p_baum, int num_codes, unsigned int freqs[256])
-{
-	int i;
-    CODEBUCH* retval 	= malloc(sizeof(CODEBUCH));
-    ASSERT_ALLOC(retval);
-
-	retval->baum 		= p_baum;
-
-    retval->codes 		= malloc((num_codes * sizeof(void*)));
-    ASSERT_ALLOC(retval->codes);
-    retval->codes_used 	= 0;
-
-	for (i = 0; i < 256; i++)
-	{
-		retval->frequencies[i] = freqs[i];
-	}
-	
-    return retval;
 }
 
 CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256])
@@ -339,12 +372,7 @@ BOOL codebuch_last_char_was_error(CODEBUCH* p_cb)
 	}
 }
 
-/**
- * Überprüft die Codes von 2 Codebüchern auf Gleichheit.
- * @param p_cb1 CODEBUCH* Das eine Codebuch.
- * @param p_cb2 CODEBUCH* Das andere Codebuch.
- * @return BOOL TRUE falls die Codes beider Codebücher gleich sind, FALSE sonst.
- */
+
 static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 {
 	if ((p_cb1 == NULL) && (p_cb2 == NULL))

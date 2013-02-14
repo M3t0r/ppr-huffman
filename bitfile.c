@@ -5,9 +5,27 @@
 #include <stdio.h>
 #include <string.h>
 
+
+/*****************************************************************************
+ * Funktionsprototypen
+ *****************************************************************************/
+/**
+ * Liest das naechste Byte der Datei ein und schreibt dieses zur weiteren
+ * Verarbeitung in den Buffer.
+ * @BITFILE fd BITFILE, dessen Buffer gefuellt werden soll.
+ */
 static void bitfile_fill_buffer(BITFILE *fd);
+
+/**
+ * Schreibt den aktuellen Inhalt des Buffer in die Datei.
+ * @BITFILE fd BITFILE, dessen Buffer geschrieben werden soll.
+ */
 static void bitfile_write_buffer_to_file(BITFILE *fd);
 
+
+/*****************************************************************************
+ * Funktionsdefinitionen
+ *****************************************************************************/
 BITFILE *bitfile_open(char* path, BOOL w)
 {
     BITFILE *fd = malloc(sizeof(BITFILE));
@@ -87,8 +105,9 @@ BYTE bitfile_read_byte(BITFILE *fd)
     {
         bitfile_fill_buffer(fd);
         if(fd->eof)
+		{
             return 0;
-        
+        }
         fd->buffer_index = 8;
         byte = fd->buffer;
     }

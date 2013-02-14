@@ -1,14 +1,35 @@
+/**
+ * @file
+ * Dieses Modul stellt einen Typ CODE zur Verfuegung, um ein Zeichen
+ * und seine Codierung nach Hufmann abspeichern zu koennen.
+ * 
+ * File:   code.h
+ * Author: Simon Lutz Brüggen, Jan-Hendrik Frintrop, Tim Ziegler
+ *
+ * Created on 2. Februar 2012, 15:24
+ */
 #ifndef _CODE_H
 #define _CODE_H
 
+/*****************************************************************************
+ * Includes
+ *****************************************************************************/
 #include "bitarray.h"
 #include "common.h"
 
+
+/*****************************************************************************
+ * Typdefinitionen
+ *****************************************************************************/
 /**
  * Typdefinition eines Codes.
  */
 typedef struct _CODE CODE;
 
+
+/*****************************************************************************
+ * Funktionsprototypen
+ *****************************************************************************/
 /**
  * Erstellt einen neuen Code.
  * @param z unsigned char Das Zeichen des neuen Codes.

@@ -1,17 +1,28 @@
+/*****************************************************************************
+ * Includes
+ *****************************************************************************/
 #include "bitarray.h"
 #include <stdlib.h>
 #include <string.h>
 
 
+/*****************************************************************************
+ * Konstanten
+ *****************************************************************************/
 #define BITARRAY_INITIAL_CAPACITY   (4*8)
 #define BITARRAY_INCREMENT          (4*8)
 
+
+/*****************************************************************************
+ * Funktionsdefintionen
+ *****************************************************************************/
 BITARRAY *bitarray_new()
 {
     BITARRAY *ba = malloc(sizeof(BITARRAY));
     if(ba == NULL)
+	{
         return NULL;
-    
+    }
     memset(ba, 0, sizeof(BITARRAY));
     
     ba->data = malloc(BITARRAY_INITIAL_CAPACITY/8);
@@ -35,8 +46,6 @@ void bitarray_free(BITARRAY **ba)
 }
 
 
-
-
 void bitarray_grow(BITARRAY *ba)
 {
     ba->capacity = (ba->capacity+BITARRAY_INCREMENT)/8;
@@ -49,16 +58,15 @@ void bitarray_grow(BITARRAY *ba)
 }
 
 
-
-
 void bitarray_push(BITARRAY *ba, BOOL bit)
 {
     BYTE mask;
     
     int index = ba->length++;
     if(ba->length >= ba->capacity)
+	{
         bitarray_grow(ba);
-        
+    }   
     mask = 0x01 << (7-(index % 8));
     ba->data[index / 8] =  (ba->data[index / 8] & ~mask) | (bit << (7-(index % 8)));
 }
@@ -72,6 +80,7 @@ void bitarray_push_byte(BITARRAY *ba, BYTE byte)
     }
 }
 
+
 BOOL bitarray_pop(BITARRAY *ba)
 {
     int index = --ba->length;
@@ -84,22 +93,22 @@ int bitarray_length(BITARRAY *ba)
 }
 
 
-
-
-
 BOOL bitarray_get_bit(BITARRAY *ba, int index)
 {
     return (ba->data[index / 8] >> (7-(index % 8))) & 1;
 }
 
+
 BYTE bitarray_get_byte(BITARRAY *ba, int index)
 {
     if(index + 8 > ba->length)
+	{
         return 0;
-    
+    }
     else if(index % 8 == 0)
+	{
         return ba->data[index/8];
-    
+    }
     else
     {
         BYTE mask = 0xFF >> (index%8);
@@ -112,21 +121,27 @@ BYTE bitarray_get_byte(BITARRAY *ba, int index)
     }
 }
 
+
 BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 {
 	if (ba1 == NULL && ba2 == NULL)
+	{
 		return TRUE;
-
+	}
 	else if (ba1 == NULL)
+	{
 		return FALSE;
-		
+	}	
 	else if (ba2 == NULL)
+	{
 		return FALSE;
-
+	}
 	else if (ba1->length != ba2->length)
+	{
 		return FALSE;
-
+	}
 	else
+	{
 		return !memcmp(ba1->data, ba2->data, ba1->length / 8);
-
+	}
 }

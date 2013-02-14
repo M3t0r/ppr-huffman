@@ -22,11 +22,27 @@
 /*****************************************************************************
  * Typdefinitionen
  *****************************************************************************/
-typedef struct {
+/**
+ * Defintion eines Typs BITFILE und seiner Struktur. 
+ */ 
+ typedef struct {
+    /* Handle auf die zu verarbeitende Datei.  */
     FILE *fd;
+	
+	/* Puffer fuer das naechste Byte der Datei. */
     BYTE buffer;
+	
+	/* Position des naechsten Bits, das zurueckgegeben werden soll, innerhalb 
+	 * des buffer. 
+	 */
     int buffer_index;
+	
+	/* Flag, ob das Ende der Datei bereits erreicht wurde. */
     BOOL eof;
+	
+	/* Flag, ob das Bitfile zum Schreiben (TRUE) oder Lesen (FALSE) geoeffnet 
+	 * wurde.
+	 */
     BOOL write_mode;
 } BITFILE;
 
