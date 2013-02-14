@@ -81,7 +81,6 @@ static CODEBUCH* codebuch_new(FREQUENCY* p_baum, int num_codes, unsigned int fre
     return retval;
 }
 
-
 static void add_code(CODEBUCH* p_cb, CODE* p_code) 
 {	
     if ((p_cb != NULL) && (p_cb->codes != NULL) && (p_code != NULL)) 
@@ -199,7 +198,7 @@ CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256])
 	return retval;
 }
 
-CODEBUCH* codebuch_new_from_structur(BITARRAY* p_ba)
+CODEBUCH* codebuch_new_from_structure(BITARRAY* p_ba)
 {
 	unsigned int frequencies[256];
 	unsigned int i;

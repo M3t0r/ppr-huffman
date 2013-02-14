@@ -44,7 +44,7 @@ extern CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256]);
  * @param p_ba BITARRAY* Das Bitarray.
  * @return CODEBUCH* Das neue Codebuch oder NULL im Fehlerfall.
  */
-extern CODEBUCH* codebuch_new_from_structur(BITARRAY* p_ba);
+extern CODEBUCH* codebuch_new_from_structure(BITARRAY* p_ba);
 
 /**
  * Gibt das Codebuch frei.
