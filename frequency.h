@@ -1,13 +1,35 @@
+/**
+ * @file
+ * Dieses Modul definiert einen Typ FREQUENCY zum Speicher von 
+ * Zeichen und deren Haeufigkeiten.
+ * 
+ * File:   frequency.h
+ * Author: Simon Lutz Brüggen, Jan-Hendrik Frintrop, Tim Ziegler
+ *
+ * Created on 2. Februar 2012, 15:24
+ */
+
 #ifndef _FREQUENCY_H
 #define _FREQUENCY_H
 
+/*****************************************************************************
+ * Includes
+ *****************************************************************************/
 #include "common.h"
 
+
+/*****************************************************************************
+ * Typdefinitionen
+ *****************************************************************************/
 /**
  * Typdefinition einer Frequenz.
  */
 typedef struct _FREQUENCY FREQUENCY;
 
+
+/*****************************************************************************
+ * Funktionsprototypen
+ *****************************************************************************/
 /**
  * Erstellt eine neue Frequenz mit dem angegebenen Zeichen und der Häufigkeit 1.
  * @param new_zeichen unsigned char Das Zeichen.

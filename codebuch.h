@@ -3,7 +3,7 @@
  * Dieses Modul stellt einen Typ Codebuch zur Verfügung. Dieses wird für eine
  * definierte Menge von Zeichen entsprechend des Huffmann-Algorithmus aufgebaut.
  * 
- * File:   cmdargs.h
+ * File:   codebuch.h
  * Author: Simon Lutz Brüggen, Jan-Hendrik Frintrop, Tim Ziegler
  *
  * Created on 2. Februar 2012, 15:24
@@ -12,14 +12,26 @@
 #ifndef _CODEBUCH_H
 #define _CODEBUCH_H
 
+/*****************************************************************************
+ * Includes
+ *****************************************************************************/
 #include "bitarray.h"
 #include "common.h"
 
+
+/*****************************************************************************
+ * Typdefinitionen
+ *****************************************************************************/
 /**
  * Typdefinition eines Codebuchs.
  */
 typedef struct _CODEBUCH CODEBUCH;
 
+
+
+/*****************************************************************************
+ * Funktionsprototypen
+ *****************************************************************************/
 /**
  * Erstellt ein neues Codebuch.
  * @param frequencies unsigned int[256] Die Anzahlen aller Zeichen.

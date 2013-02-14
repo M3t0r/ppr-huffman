@@ -1,6 +1,20 @@
+/**
+ * @file
+ * Dieser Header definiert einen Heap und die hierfuer benoetigten
+ * Funktionen.
+ * 
+ * File:   heap.h
+ * Author: Simon Lutz Brüggen, Jan-Hendrik Frintrop, Tim Ziegler
+ *
+ * Created on 2. Februar 2012, 15:24
+ */
+
 #ifndef _HEAP_H
 #define _HEAP_H
 
+/*****************************************************************************
+ * Typdefinitionen
+ *****************************************************************************/
 /**
  * Prototyp für eine Vergleichs-Funktion.
  */
@@ -11,6 +25,10 @@ typedef int (*CMP_FCT)(void* , void* );
  */
 typedef struct _HEAP HEAP;
 
+
+/*****************************************************************************
+ * Funktionsprototypen
+ *****************************************************************************/
 /**
  * Erstellt einen neuen Heap mit der gegebenen Vergleichsfunktion.
  * @param cmp_f CMP_FCT Die Vergleichsfunktion.
