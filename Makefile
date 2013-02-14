@@ -29,7 +29,7 @@ $(BUILDDIR)%.c.o: %.c
 	@$(CC) $(CCFLAGS) -c $^ -o $@
 
 
-test: tests/bitarray
+test: tests/bitarray tests/bitfile
 	@tests/test.sh
 
 
