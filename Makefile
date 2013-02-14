@@ -29,7 +29,7 @@ $(BUILDDIR)%.c.o: %.c
 	@$(CC) $(CCFLAGS) -c $^ -o $@
 
 
-test: tests/bitarray tests/heap tests/code tests/bitfile
+test: tests/bitarray tests/bitfile tests/heap tests/code tests/frequency
 	@tests/test.sh
 
 
@@ -43,6 +43,9 @@ tests/heap: heap.c tests/heap_test.c tests/testmain.c
 	@$(CC) $(CCFLAGS) -g -DDEBUG $^ -o $@
 	
 tests/code: bitarray.c code.c tests/code_test.c tests/testmain.c
+	@$(CC) $(CCFLAGS) -g -DDEBUG $^ -o $@
+	
+tests/frequency: frequency.c tests/frequency_test.c tests/testmain.c
 	@$(CC) $(CCFLAGS) -g -DDEBUG $^ -o $@
 
 clean:

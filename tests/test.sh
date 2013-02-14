@@ -1,6 +1,6 @@
 #!/bin/bash
 
-suits="bitarray bitfile heap code"
+suits="bitarray bitfile heap code frequency"
 
 errors=0
 

@@ -166,26 +166,21 @@ BOOL frequency_equals(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
 {
 	if (p_freq1 == NULL && p_freq2 == NULL)
 	{
-	#ifdef DEBUG
-		printf("p_freq1 und p_freq2 NULL\n");
-	#endif
 		return TRUE;
 	}
 	else if (p_freq1 == NULL)
 	{
-		printf("p_freq1 NULL\n");
 		return FALSE;
 	}
 	else if (p_freq2 == NULL)
 	{
-		printf("p_freq2 NULL\n");
 		return FALSE;
 	}
 	else
 	{
 		if (p_freq1->zeichen != p_freq2->zeichen)
 		{
-			printf("Zeichen unterschiedlich '%c' <-> '%c'\n", p_freq1->zeichen, p_freq2->zeichen);
+			/*printf("Zeichen unterschiedlich '%c' <-> '%c'\n", p_freq1->zeichen, p_freq2->zeichen);*/
 			return FALSE;
 		}
 		else
@@ -193,8 +188,5 @@ BOOL frequency_equals(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
 			return (frequency_equals(p_freq1->left, p_freq2->left)
 					&& frequency_equals(p_freq1->right, p_freq2->right));
 		}
-		/*return (p_freq1->zeichen == p_freq2->zeichen
-				&& frequency_equals(p_freq1->left, p_freq2->left)
-				&& frequency_equals(p_freq1->right, p_freq2->right));*/
 	}
 }
