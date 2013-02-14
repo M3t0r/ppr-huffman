@@ -54,7 +54,7 @@ extern BITARRAY* codebuch_code_for_char(CODEBUCH* p_cb, unsigned char c);
  * @param p_cb CODEBUCH* Das Codebuch.
  * @param p_code BITARRAY* Der zu suchende Code als Bitarray.
  * @param p_used_bits unsigned int* Wenn != NULL, wird hier die Anzahl der benutzten Bits gespeichert.
- * @return unsigned char Das Zeichen zu dem Code oder blablabla im Fehlerfall.
+ * @return unsigned char Das Zeichen zu dem Code oder 0 im Fehlerfall. (Bei 0 mit codebuch_last_char_was_error auf Fehler prüfen)
  */
 extern unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned int* p_used_bits);
 
