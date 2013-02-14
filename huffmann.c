@@ -3,6 +3,7 @@
  *****************************************************************************/
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "common.h"
 #include "huffmann.h"
@@ -16,7 +17,7 @@
 void compress(char *in_filename, char *out_filename)
 {
     BYTE byte = 0;
-    int i;
+    BOOL ist_leer;
     unsigned int anzahl_zeichen[256];
     CODEBUCH *p_codebuch;
     BITFILE *p_input;
@@ -50,15 +51,12 @@ void compress(char *in_filename, char *out_filename)
     DPRINT("Ausgabedatei geoeffnet!\n");
     
     /* Initialisiere anzahl_zeichen Vektor */
-    for(i = 0; i < 256; i++)
-    {
-        anzahl_zeichen[i] = 0;
-    }
+    memset(anzahl_zeichen, 0, sizeof(unsigned int)*256);
     
     
     
 
-    i = 0;
+    ist_leer = TRUE;
     
     /* Codebuch aufbauen */
     while(!bitfile_is_eof(p_input)) 
@@ -67,22 +65,22 @@ void compress(char *in_filename, char *out_filename)
         if(!(byte == 0 && bitfile_last_read_was_error(p_input)))
         {
             anzahl_zeichen[byte]++;
-            i = 1;
+            ist_leer = FALSE;
         }
     }
 
     
-    if(i == 1) 
+    if(ist_leer == FALSE) 
     {
-    p_codebuch = codebuch_new_from_frequency(anzahl_zeichen);
-    if(p_codebuch == NULL)
-    {
-        fprintf(stderr, "Beim Erstellen des Codebuchs trat ein Fehler auf.\n\n");
-        exit(EXIT_FAILURE);
-    }
-
-        /* WIEDER ZUM ANFANG DES BITFILES p_input SPRINGEN */
-
+        /* zeiger an den anfang */
+        bitfile_seek(p_input, 0, SEEK_SET);
+    
+        p_codebuch = codebuch_new_from_frequency(anzahl_zeichen);
+        if(p_codebuch == NULL)
+        {
+            fprintf(stderr, "Beim Erstellen des Codebuchs trat ein Fehler auf.\n\n");
+            exit(EXIT_FAILURE);
+        }
 
 
         /* Ausgabedatei erzeugen */
@@ -96,10 +94,7 @@ void compress(char *in_filename, char *out_filename)
                 fprintf(stderr, "Es ist ein Fehlerb aufgetreten.");
                 exit(EXIT_FAILURE);
             }
-            else
-            {
-                bitfile_write_bitarray(p_output, code);
-            }
+            bitfile_write_bitarray(p_output, code);
         }
     }
     else

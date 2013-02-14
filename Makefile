@@ -28,6 +28,16 @@ $(BUILDDIR)%.c.o: %.c
 	@echo "  (CC) $^"
 	@$(CC) $(CCFLAGS) -c $^ -o $@
 
+
+
+tests/bitarray: bitarray.c tests/bitarray_test.c tests/testmain.c
+	$(CC) $(CCFLAGS) -g -DDEBUG $^ -o $@
+
+tests/bitfile: bitarray.c bitfile.c tests/bitfile.c tests/testmain.c
+	$(CC) $(CCFLAGS) -g -DDEBUG $^ -o $@
+
+
+
 clean:
 	-@rm -rf $(OUTPUT) $(BUILDDIR)
 	-@echo "clean!"
