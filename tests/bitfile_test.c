@@ -3,16 +3,6 @@
 
 char *name_of_testsuit = "bitfile";
 
-BOOL bitfile_read_bit(BITFILE *fd);
-BYTE bitfile_read_byte(BITFILE *fd);
-BITARRAY *bitfile_read_bitarray(BITFILE *fd, int length);
-void bitfile_write_bit(BITFILE *fd, BOOL d);
-void bitfile_write_byte(BITFILE *fd, BYTE d);
-void bitfile_write_bitarray(BITFILE *fd, BITARRAY d);
-BOOL bitfile_is_eof(BITFILE *fd);
-int bitfile_seek(BITFILE *fd, long int offset, int origin);
-BOOL bitfile_last_read_was_error(BITFILE *fd);
-
 BOOL test_open_ungueltig()
 {
     BITFILE *fd = bitfile_open("bitfile_open_ungueltig.txt", FALSE);
@@ -84,9 +74,9 @@ BOOL test_read_bitarray()
     ba = bitfile_read_bitarray(fd, 17);
     
     result = bitarray_length(ba) == 17
-        && bitarray_get_byte(0) == 'F'
-        && bitarray_get_byte(8) == 'r'
-        && bitarray_get_bit(9) == FALSE;
+        && bitarray_get_byte(ba, 0) == 'F'
+        && bitarray_get_byte(ba, 8) == 'r'
+        && bitarray_get_bit(ba, 9) == FALSE;
         
     bitarray_free(&ba);
     bitfile_close(&fd);
@@ -94,16 +84,14 @@ BOOL test_read_bitarray()
     return result;
 }
 
+
+
 testunit testsuit[] = {
-    {"new bitarray", test_new},
-    {"free bitarray", test_free},
-    {"push ein bit", test_push_ein_bit},
-    {"push mehrer bits", test_push_mehrere_bits},
-    {"pushe 10 bits", test_push_10_bits},
-    {"pushe ein byte", test_push_byte},
-    {"pushe ein byte folgend auf mehrer bits", test_push_bits_and_bytes},
-    {"get bit", test_get_bit},
-    {"get byte", test_get_byte},
-    {"pop bit", test_pop_bit}
+    {"fehler beim öffnen", test_open_ungueltig},
+    {"datei öffnen", test_open_gueltig},
+    {"datei schliessen", test_close},
+    {"read bit", test_read_bit},
+    {"read byte", test_read_byte},
+    {"read bitarray", test_read_bitarray}
 };
-int nr_of_unittests = 10;
+int nr_of_unittests = 6;

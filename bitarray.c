@@ -63,9 +63,13 @@ void bitarray_push(BITARRAY *ba, BOOL bit)
     ba->data[index / 8] =  (ba->data[index / 8] & ~mask) | (bit << (7-(index % 8)));
 }
 
-void bitarray_push_byte(BITARRAY *ba, BYTE d)
+void bitarray_push_byte(BITARRAY *ba, BYTE byte)
 {
-
+    int i;
+    for(i = 0; i < 8; i++)
+    {
+        bitarray_push(ba, ((byte<<i)&128) == 128);
+    }
 }
 
 BOOL bitarray_pop(BITARRAY *ba)

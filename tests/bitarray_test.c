@@ -91,7 +91,7 @@ BOOL test_get_bit()
     
     bitarray_push_byte(ba, 32);
     
-    return bitarray_get_bit(ba, 3) && ba->length == 8;
+    return bitarray_get_bit(ba, 2) && ba->length == 8;
 }
 
 BOOL test_get_byte()
