@@ -59,7 +59,7 @@ void bitarray_push(BITARRAY *ba, BOOL d);
 void bitarray_push_byte(BITARRAY *ba, BYTE d);
 
 /**
- * Holt und entfernt das vorderste Bit aus dem Bitarray.
+ * Holt und entfernt das letzte Bit aus dem Bitarray.
  * @param ba Bitarray, aus dem gelesen werden soll.
  * @return Gibt das gelesene Bit zurueck. TRUE entspricht 1, FALSE ist 0.
  */
