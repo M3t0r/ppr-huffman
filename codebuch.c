@@ -206,6 +206,7 @@ CODEBUCH* codebuch_new_from_structure(BITARRAY* p_ba)
 	unsigned int index;
 	int i;
 	
+	/* 1kB Version */
 	/*if (bitarray_length(p_ba) < 256 * 32)
 	{
 		printf("Bitarray zu klein für Codebuch!\n");
@@ -225,8 +226,8 @@ CODEBUCH* codebuch_new_from_structure(BITARRAY* p_ba)
 	index = 0;
 	for (i = 0; i < 256; i++)
 	{
-		unsigned char anzahl_bytes_for_anzahl = (bitarray_get_bit(p_ba, index + 0) << 2) 
-												| (bitarray_get_bit(p_ba, index + 1) << 1) 
+		unsigned char anzahl_bytes_for_anzahl = ((bitarray_get_bit(p_ba, index + 0) << 1) 
+												| (bitarray_get_bit(p_ba, index + 1)) << 1) 
 												| bitarray_get_bit(p_ba, index + 2);
 		index += 3;
 		
@@ -392,6 +393,7 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 	
 	retval = bitarray_new();
 	
+	/* 1kB version */
 	/*for (i = 0; i < 256; i++)
 	{
 		int j;
@@ -419,6 +421,8 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 16) & 0x000000FF);
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 8) & 0x000000FF);
 			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
+			
+			/*printf("pushed %c: %u in 4 Bytes\n", i, p_cb->frequencies[i]);*/
 		}
 		else if ((double)p_cb->frequencies[i] >= pow(2, 2 * 8))
 		{
@@ -429,6 +433,8 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 16) & 0x000000FF);
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 8) & 0x000000FF);
 			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
+			
+			/*printf("pushed %c: %u in 3 Bytes\n", i, p_cb->frequencies[i]);*/
 		}
 		else if ((double)p_cb->frequencies[i] >= pow(2, 1 * 8))
 		{
@@ -438,14 +444,22 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 			
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 8) & 0x000000FF);
 			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
+			
+			/*printf("pushed %c: %u in 2 Bytes\n", i, p_cb->frequencies[i]);*/
 		}
-		else if ((double)p_cb->frequencies[i] > pow(2, 0 * 8))
+		else if ((double)p_cb->frequencies[i] >= pow(2, 0 * 8))
 		{
 			bitarray_push(retval, (BOOL)0);
 			bitarray_push(retval, (BOOL)0);
 			bitarray_push(retval, (BOOL)1);
 			
 			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
+			
+			/*printf("pushed %c: %u in 1 Bytes\n", i, p_cb->frequencies[i]);*/
+		}
+		else
+		{
+			printf("WTF? oO\n");
 		}
 	}
 	
@@ -510,12 +524,10 @@ BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 	}
 	else if (p_cb1 == NULL)
 	{
-		printf("p_cb1 NULL\n");
 		return FALSE;
 	}
 	else if (p_cb2 == NULL)
 	{
-		printf("p_cb2 NULL\n");
 		return FALSE;
 	}
 	else if (!frequency_equals(p_cb1->baum, p_cb2->baum))

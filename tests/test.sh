@@ -1,6 +1,6 @@
 #!/bin/bash
 
-suits="bitarray bitfile heap code frequency"
+suits="bitarray bitfile heap code frequency codebuch"
 
 errors=0
 
