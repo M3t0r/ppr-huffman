@@ -16,6 +16,11 @@
  *****************************************************************************/
 void compress(char *in_filename, char *out_filename)
 {
+	/************************************************************************
+	 * Wir müssen mit 3Bit noch speichern, wie viele Bits des letzten Bytes *
+	 * in der komprimierten Datei noch Code sind.                           *
+	 ************************************************************************/
+	
     BYTE byte = 0;
     BOOL ist_leer;
     unsigned int anzahl_zeichen[256];
@@ -118,5 +123,10 @@ void compress(char *in_filename, char *out_filename)
 
 void decompress(char *in_filename, char *out_filename)
 {
-    
+    /**********************************************************
+     * +-------------------------------------------+--------+ *
+     * | 3 Bit -> wie viele Bytes die Anzahl nutzt | Anzahl | *
+     * +-------------------------------------------+--------+ *
+     *    immer 3 Bit 								 0-4 Byte *
+     **********************************************************/
 }

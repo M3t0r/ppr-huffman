@@ -7,6 +7,8 @@
 #include "code.h"
 #include "frequency.h"
 
+#include <math.h>
+
 
 /*****************************************************************************
  * Strukturdefinitionen
@@ -201,9 +203,10 @@ CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256])
 CODEBUCH* codebuch_new_from_structure(BITARRAY* p_ba)
 {
 	unsigned int frequencies[256];
-	unsigned int i;
+	unsigned int index;
+	int i;
 	
-	if (bitarray_length(p_ba) < 256 * 32 /* aka 1024 Byte */)
+	/*if (bitarray_length(p_ba) < 256 * 32)
 	{
 		printf("Bitarray zu klein für Codebuch!\n");
 		return NULL;
@@ -217,6 +220,48 @@ CODEBUCH* codebuch_new_from_structure(BITARRAY* p_ba)
 						| (bitarray_get_byte(p_ba, index + 8) << 16) 
 						| (bitarray_get_byte(p_ba, index + 16) << 8) 
 						| bitarray_get_byte(p_ba, index + 24);
+	}*/
+	
+	index = 0;
+	for (i = 0; i < 256; i++)
+	{
+		unsigned char anzahl_bytes_for_anzahl = (bitarray_get_bit(p_ba, index + 0) << 2) 
+												| (bitarray_get_bit(p_ba, index + 1) << 1) 
+												| bitarray_get_bit(p_ba, index + 2);
+		index += 3;
+		
+		if (anzahl_bytes_for_anzahl == 4)
+		{
+			frequencies[i] = (bitarray_get_byte(p_ba, index) << 24) 
+							| (bitarray_get_byte(p_ba, index + 8) << 16) 
+							| (bitarray_get_byte(p_ba, index + 16) << 8) 
+							| bitarray_get_byte(p_ba, index + 24);
+		}
+		else if (anzahl_bytes_for_anzahl == 3)
+		{
+			frequencies[i] = (bitarray_get_byte(p_ba, index) << 16) 
+							| (bitarray_get_byte(p_ba, index + 8) << 8) 
+							| bitarray_get_byte(p_ba, index + 16);
+		} 
+		else if (anzahl_bytes_for_anzahl == 2)
+		{
+			frequencies[i] = (bitarray_get_byte(p_ba, index) << 8) 
+							| bitarray_get_byte(p_ba, index + 8);
+		}
+		else if (anzahl_bytes_for_anzahl == 1)
+		{
+			frequencies[i] = bitarray_get_byte(p_ba, index);
+		}
+		else if (anzahl_bytes_for_anzahl == 0)
+		{
+			frequencies[i] = 0;
+		}
+		else
+		{
+			printf("WTF? oO\n");
+		}
+		
+		index += (anzahl_bytes_for_anzahl * 8);
 	}
 	
 	return codebuch_new_from_frequency(frequencies);
@@ -347,12 +392,60 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 	
 	retval = bitarray_new();
 	
-	for (i = 0; i < 256; i++)
+	/*for (i = 0; i < 256; i++)
 	{
 		int j;
 		for (j = 3; j >= 0; j--)
 		{
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> (j * 8)) & 0xFF);
+		}
+	}*/
+	
+	for (i = 0; i < 256; i++)
+	{
+		if (p_cb->frequencies[i] == 0)
+		{
+			bitarray_push(retval, (BOOL)0);
+			bitarray_push(retval, (BOOL)0);
+			bitarray_push(retval, (BOOL)0);
+		}
+		else if ((double)p_cb->frequencies[i] >= pow(2, 3 * 8))
+		{
+			bitarray_push(retval, (BOOL)1);
+			bitarray_push(retval, (BOOL)0);
+			bitarray_push(retval, (BOOL)0);
+			
+			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 24) & 0x000000FF);
+			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 16) & 0x000000FF);
+			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 8) & 0x000000FF);
+			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
+		}
+		else if ((double)p_cb->frequencies[i] >= pow(2, 2 * 8))
+		{
+			bitarray_push(retval, (BOOL)0);
+			bitarray_push(retval, (BOOL)1);
+			bitarray_push(retval, (BOOL)1);
+			
+			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 16) & 0x000000FF);
+			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 8) & 0x000000FF);
+			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
+		}
+		else if ((double)p_cb->frequencies[i] >= pow(2, 1 * 8))
+		{
+			bitarray_push(retval, (BOOL)0);
+			bitarray_push(retval, (BOOL)1);
+			bitarray_push(retval, (BOOL)0);
+			
+			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 8) & 0x000000FF);
+			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
+		}
+		else if ((double)p_cb->frequencies[i] > pow(2, 0 * 8))
+		{
+			bitarray_push(retval, (BOOL)0);
+			bitarray_push(retval, (BOOL)0);
+			bitarray_push(retval, (BOOL)1);
+			
+			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
 		}
 	}
 	
