@@ -106,7 +106,6 @@ static void add_code(CODEBUCH* p_cb, CODE* p_code)
 	}
 }
 
-
 static void build_codebuch(FREQUENCY* p_freq, BITARRAY* p_prev_path, CODEBUCH* p_cb)
 {
 	unsigned int len = bitarray_length(p_prev_path);
@@ -478,7 +477,6 @@ BOOL codebuch_last_char_was_error(CODEBUCH* p_cb)
 	}
 }
 
-
 static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 {
 	if ((p_cb1 == NULL) && (p_cb2 == NULL))
@@ -487,17 +485,17 @@ static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 	}
 	else if (p_cb1 == NULL)
 	{
-		printf("p_cb1 NULL\n");
+		/*printf("p_cb1 NULL\n");*/
 		return FALSE;
 	}
 	else if (p_cb2 == NULL)
 	{
-		printf("p_cb2 NULL\n");
+		/*printf("p_cb2 NULL\n");*/
 		return FALSE;
 	}
 	else if (p_cb1->codes_used != p_cb2->codes_used)
 	{
-		printf("codes_used unterschiedlich (%d <-> %d)\n", p_cb1->codes_used, p_cb2->codes_used);
+		/*printf("codes_used unterschiedlich (%d <-> %d)\n", p_cb1->codes_used, p_cb2->codes_used);*/
 		return FALSE;
 	}
 	else
@@ -507,7 +505,7 @@ static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 		{
 			if (!code_equals(p_cb1->codes[i], p_cb2->codes[i]))
 			{
-				printf("code %d ist unterschiedlich\n", i);
+				/*printf("code %d ist unterschiedlich\n", i);*/
 				return FALSE;
 			}
 		}
@@ -532,12 +530,12 @@ BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 	}
 	else if (!frequency_equals(p_cb1->baum, p_cb2->baum))
 	{
-		printf("bäume sind unterschiedlich\n");
+		/*printf("bäume sind unterschiedlich\n");*/
 		return FALSE;
 	}
 	else if (!codes_equal(p_cb1, p_cb2))
 	{
-		printf("codes unterschiedlich\n");
+		/*printf("codes unterschiedlich\n");*/
 		return FALSE;
 	}
 	else
