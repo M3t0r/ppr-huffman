@@ -198,15 +198,15 @@ void decompress(char *in_filename, char *out_filename)
         BITARRAY *pipeline;
         unsigned int anzahl_zeichen[256];
         int i;
-        int groesse_anzahl;
         
         memset(anzahl_zeichen, 0, sizeof(unsigned int) * 256);
         
         /* häufigkeit der zeichen einlesen */
         for(i = 0; i < 256; i++)
         {
-            groesse_anzahl = bitfile_read_bit(p_input) << 2 | bitfile_read_bit(p_input) << 1 | bitfile_read_bit(p_input);
-            for(; groesse_anzahl > 0; groesse_anzahl--)
+            int anzahl_byte = bitfile_read_bit(p_input) << 2 | bitfile_read_bit(p_input) << 1 | bitfile_read_bit(p_input);
+            if(anzahl_byte != 0) printf("%x hat %d bytes\n", i, anzahl_byte);
+            for(; anzahl_byte > 0; anzahl_byte--)
             {
                 anzahl_zeichen[i] = (anzahl_zeichen[i] << 8) | bitfile_read_byte(p_input);
             }
@@ -215,7 +215,7 @@ void decompress(char *in_filename, char *out_filename)
         p_codebuch = codebuch_new_from_frequency(anzahl_zeichen);
         pipeline = bitarray_new();
         
-        frequency_print(codebuch_get_baum(p_codebuch), 0, 0);
+        frequency_print(codebuch_get_baum(p_codebuch), 0, 1);
         
         do
         {

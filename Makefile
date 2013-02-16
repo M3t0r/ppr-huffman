@@ -17,6 +17,10 @@ $(OUTPUT): $(addprefix $(BUILDDIR), $(addsuffix .o, $(SRC)))
 	@echo "  (LD) $^ -> $@"
 	@$(LD) $(LDFLAGS) $^ -o $@
 
+bitdump: $(addprefix $(BUILDDIR), $(addsuffix .o, bitdump.c bitfile.c bitarray.c))
+	@echo "  (LD) $^ -> $@"
+	@$(LD) $(LDFLAGS) $^ -o $@
+
 all: clean $(OUTPUT)
 
 splint:
