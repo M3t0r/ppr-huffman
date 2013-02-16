@@ -9,7 +9,7 @@ LD = $(CC)
 SFLAGS = -weak -booltype BOOL -boolfalse FALSE -booltrue TRUE +predboolint +noret +usedef +infloops +casebreak -initallelements -incompletetype -fixedformalarray
 OUTPUT = ppr-huffman
 BUILDDIR = build/
-SRC = main.c bitarray.c cmdargs.c
+SRC = main.c bitarray.c cmdargs.c frequency.c heap.c code.c codebuch.c
 
 # das endprodukt linken
 $(OUTPUT): $(addprefix $(BUILDDIR), $(addsuffix .o, $(SRC)))
