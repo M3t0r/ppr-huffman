@@ -53,6 +53,7 @@ tests/codebuch: bitarray.c heap.c code.c frequency.c codebuch.c tests/codebuch_t
 
 clean:
 	-@rm -rf $(OUTPUT) $(BUILDDIR)
+	-@rm -rf tests/codebuch tests/frequency tests/heap tests/test tests/code tests/bitarray tests/bitfile tests/*.dSYM tests/bitfile_write.txt
 	-@echo "clean!"
 	
 debug:

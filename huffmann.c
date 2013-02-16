@@ -93,6 +93,7 @@ void compress(char *in_filename, char *out_filename)
             fprintf(stderr, "Beim Erstellen des Codebuchs trat ein Fehler auf.\n\n");
             exit(EXIT_FAILURE);
         }
+        
 
 
         /* Ausgabedatei erzeugen */
@@ -107,20 +108,23 @@ void compress(char *in_filename, char *out_filename)
         
         benutzte_bits = (bitarray_length(codebuch) + 3) % 8;
         
-        while(!bitfile_is_eof(p_input)) 
+        byte = bitfile_read_byte(p_input);
+        do
         {
-            byte = bitfile_read_byte(p_input);
             code = codebuch_code_for_char(p_codebuch, byte);
+            
+            if(code == NULL)
+            {
+                fprintf(stderr, "Es ist ein Fehler aufgetreten.\n");
+                exit(EXIT_FAILURE);
+            }
             
             benutzte_bits = (benutzte_bits+bitarray_length(code) ) % 8;
             
-            if(code == 0 && codebuch_last_char_was_error(p_codebuch)) 
-            {
-                fprintf(stderr, "Es ist ein Fehler aufgetreten.");
-                exit(EXIT_FAILURE);
-            }
             bitfile_write_bitarray(p_output, code);
-        }
+            
+            byte = bitfile_read_byte(p_input);
+        } while(!bitfile_is_eof(p_input));
         
         bitfile_flush_write(p_output);
         bitfile_seek(p_output, 0, SEEK_SET);
@@ -132,8 +136,6 @@ void compress(char *in_filename, char *out_filename)
         }
         
         bitfile_write_byte(p_output, erste_byte);
-        DPRINT_E(benutzte_bits, d);
-        DPRINT_E(erste_byte, x);
     }
     else
     {
@@ -213,6 +215,7 @@ void decompress(char *in_filename, char *out_filename)
         p_codebuch = codebuch_new_from_frequency(anzahl_zeichen);
         pipeline = bitarray_new();
         
+        frequency_print(codebuch_get_baum(p_codebuch), 0, 0);
         
         do
         {

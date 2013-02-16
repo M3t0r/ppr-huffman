@@ -234,6 +234,7 @@ int bitfile_seek(BITFILE *fd, long int offset, int origin)
     {
         fd->buffer_index = 8;
     }
+    fd->eof = FALSE;
     return fseek(fd->fd, offset, origin);
 }
 
