@@ -91,4 +91,6 @@ extern BOOL codebuch_last_char_was_error(CODEBUCH* p_cb);
  */
 extern BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2);
 
+extern FREQUENCY* codebuch_get_baum(CODEBUCH* p_cb);
+
 #endif

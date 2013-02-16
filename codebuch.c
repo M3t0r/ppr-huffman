@@ -543,3 +543,13 @@ BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 		return TRUE;
 	}
 }
+
+
+FREQUENCY* codebuch_get_baum(CODEBUCH* p_cb)
+{
+	if (p_cb == NULL)
+	{
+		return NULL;
+	}
+	return p_cb->baum;
+}

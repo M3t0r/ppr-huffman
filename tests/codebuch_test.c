@@ -200,17 +200,19 @@ static BOOL test_undso(char* orig_str)
 	size_t len 		= strlen(orig_str);
 	char* test_str 	= malloc(len * sizeof(char) + 1);
 	
-	
+	/* frequencies nullen */
 	for (i = 0; i < 256; i++)
 	{
 		f[i] = 0;
 	}
 	
+	/* frequencies setzen */
 	for (i = 0; i < len; i++)
 	{
 		f[(int)orig_str[i]]++;
 	}
 	
+	/* versciedene zeichen zählen */
 	count = 0;
 	for (i = 0; i < 256; i++)
 	{
@@ -222,12 +224,14 @@ static BOOL test_undso(char* orig_str)
 	
 	codes = malloc(count * sizeof(BITARRAY*));
 	
+	/* codebuch erzeugen, speichern und neu auslesen */
 	cb1 = codebuch_new_from_frequency(f);
 	ba 	= codebuch_structure(cb1);
 	cb2 = codebuch_new_from_structure(ba);
 	
 	retval &= codebuch_equals(cb1, cb2);
 	
+	/* codes der vorhandenen zeichen aus beiden codebüchern vergleichen */
 	count = 0;
 	for (i = 0; i < 256; i++)
 	{
@@ -253,6 +257,7 @@ static BOOL test_undso(char* orig_str)
 	
 	full_code = bitarray_new();
 	
+	/* orig_str als codes darstellen */
 	for (i = 0; i < len; i++)
 	{
 		unsigned int j;
@@ -267,6 +272,7 @@ static BOOL test_undso(char* orig_str)
 	
 	/*bitarray_print(full_code);*/
 	
+	/* test_str aus codes des orig_str wiederherstellen */
 	for (i = 0; i < len; i++)
 	{
 		unsigned int tmp = 0;
