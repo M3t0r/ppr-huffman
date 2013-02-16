@@ -139,6 +139,51 @@ BOOL test_pop_bit()
         && ba->length == 0;
 }
 
+BOOL test_remove_front()
+{
+    BITARRAY *ba = bitarray_new();
+    bitarray_push_byte(ba, 'T');
+    bitarray_push_byte(ba, 'e');
+    bitarray_push_byte(ba, 's');
+    bitarray_push_byte(ba, 't');
+    
+    bitarray_remove_front(ba, 12); /* 'T' und halbes 'e' */
+    
+    return bitarray_length(ba) == 20
+        && bitarray_get_bit(ba, 0) == FALSE
+        && bitarray_get_bit(ba, 1) == TRUE
+        && bitarray_get_bit(ba, 2) == FALSE
+        && bitarray_get_bit(ba, 3) == TRUE
+        && bitarray_get_byte(ba, 4) == 's'
+        && bitarray_get_byte(ba, 12) == 't';
+}
+
+BOOL test_merge()
+{
+    BITARRAY *ba1 = bitarray_new();
+    BITARRAY *ba2 = bitarray_new();
+    
+    bitarray_push_byte(ba1, 'T');
+    bitarray_push(ba1, FALSE);
+    bitarray_push(ba1, TRUE);
+    bitarray_push(ba1, TRUE);
+    bitarray_push(ba1, FALSE);
+    
+    bitarray_push(ba2, FALSE);
+    bitarray_push(ba2, TRUE);
+    bitarray_push(ba2, FALSE);
+    bitarray_push(ba2, TRUE);
+    bitarray_push_byte(ba2, 's');
+    bitarray_push_byte(ba2, 't');
+    
+    bitarray_merge(ba1, ba2);
+    
+    return bitarray_length(ba1) == 32
+        && bitarray_get_byte(ba1, 0)  == 'T'
+        && bitarray_get_byte(ba1, 8)  == 'e'
+        && bitarray_get_byte(ba1, 16) == 's'
+        && bitarray_get_byte(ba1, 24) == 't';
+}
 
 testunit testsuit[] = {
     {"new bitarray", test_new},
@@ -150,6 +195,8 @@ testunit testsuit[] = {
     {"pushe ein byte folgend auf mehrer bits", test_push_bits_and_bytes},
     {"get bit", test_get_bit},
     {"get byte", test_get_byte},
-    {"pop bit", test_pop_bit}
+    {"pop bit", test_pop_bit},
+    {"remove front", test_remove_front},
+    {"bitarrays mergen", test_merge}
 };
-int nr_of_unittests = 10;
+int nr_of_unittests = 12;

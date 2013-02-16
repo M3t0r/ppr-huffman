@@ -124,6 +124,8 @@ BOOL bitfile_is_eof(BITFILE *fd);
  */
 int bitfile_seek(BITFILE *fd, long int offset, int origin);
 
+void bitfile_flush_write(BITFILE *fd);
+
 BOOL bitfile_last_read_was_error(BITFILE *fd);
 
 #endif

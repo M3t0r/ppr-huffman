@@ -41,14 +41,17 @@ BITFILE *bitfile_open(char* path, BOOL w)
     }
     
     fd->write_mode = w;
-    fd->buffer_index = 8;
+    fd->buffer_index = w?0:8;
     
     return fd;
 }
 
 void bitfile_close(BITFILE **fd)
 {
-    /* ToDo: letztes bits schreiben, falls im schreibe modus, und noch daten vorhanden */
+    if((*fd)->write_mode && (*fd)->buffer_index != 0)
+    {
+        bitfile_flush_write(*fd);
+    }
 
     fclose((*fd)->fd);
     free(*fd);
@@ -139,16 +142,15 @@ BYTE bitfile_read_byte(BITFILE *fd)
 BITARRAY *bitfile_read_bitarray(BITFILE *fd, int length)
 {
     BITARRAY *ba = bitarray_new();
-    
-    while(length > 7)
-    {
-        bitarray_push_byte(ba, bitfile_read_byte(fd));
-        length -= 8;
-    }
-    while(length > 0)
+    while(length > 0 && !bitfile_is_eof(fd))
     {
         bitarray_push(ba, bitfile_read_bit(fd));
         length--;
+    }
+    if(bitfile_is_eof(fd))
+    {
+        /* das letzte bit war EOF */
+        bitarray_pop(ba);
     }
     
     return ba;
@@ -223,7 +225,31 @@ BOOL bitfile_is_eof(BITFILE *fd)
 
 int bitfile_seek(BITFILE *fd, long int offset, int origin)
 {
+    if(fd->write_mode)
+    {
+        fd->buffer = 0;
+        fd->buffer_index = 0;
+    }
+    else
+    {
+        fd->buffer_index = 8;
+    }
     return fseek(fd->fd, offset, origin);
+}
+
+void bitfile_flush_write(BITFILE *fd)
+{
+    BYTE buffer;
+    
+    if(!fd->write_mode)
+    {
+        fprintf(stderr, "Datei im lese Modus geöffnet, kann nicht schreiben.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    buffer = fd->buffer << (8 - fd->buffer_index);
+    fputc(buffer, fd->fd);
+    bitfile_seek(fd, -1, SEEK_CUR);
 }
 
 BOOL bitfile_last_read_was_error(BITFILE *fd)

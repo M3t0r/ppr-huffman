@@ -27,6 +27,7 @@ typedef struct {
     BYTE *data;
     unsigned int capacity;
     unsigned int length;
+    unsigned int offset;
 } BITARRAY;
 
 /*****************************************************************************
@@ -88,6 +89,10 @@ BOOL bitarray_get_bit(BITARRAY *ba, int index);
  * @return Das gelesene Byte.
  */
 BYTE bitarray_get_byte(BITARRAY *ba, int index);
+
+void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2);
+
+void bitarray_remove_front(BITARRAY *ba, int length);
 
 /**
  * Gibt zurueck, ob die beiden Bitarrays gleich sind.

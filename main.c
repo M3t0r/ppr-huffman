@@ -62,41 +62,39 @@ int main (int argc, char **argv) {
         DPRINT("Datei wird komprimiert...\n");
         if(argumente.output_file == NULL) {
             int input_file_laenge = (int) strlen(argumente.input_file);
-            char *ausgabedatei = malloc((input_file_laenge + 3) * sizeof(char));
+            char *ausgabedatei = malloc((input_file_laenge + 4) * sizeof(char));
             ASSERT_ALLOC(ausgabedatei);
-            strncpy(ausgabedatei, argumente.input_file, (size_t) input_file_laenge);
+            strcpy(ausgabedatei, argumente.input_file);
             ausgabedatei = strcat(ausgabedatei, ".hc");
             
             argumente.output_file = ausgabedatei;
         }
 
-        //compress(argumente.input_file, argumente.output_file);
+        compress(argumente.input_file, argumente.output_file);
     }
     else
     {
         /* Eingabedatei dekomprimieren */
         DPRINT("Datei wird dekomprimiert...\n");
         if(argumente.output_file == NULL) {
-            int input_file_laenge = (int) strlen(argumente.input_file);
-            char *dateiendung = argumente.input_file + input_file_laenge - 3;
-            char *ausgabedatei = malloc((input_file_laenge + 3) * sizeof(char));
-            ASSERT_ALLOC(ausgabedatei);
+            char *ausgabedatei = malloc(strlen(argumente.input_file)+ 4);
+            ASSERT_ALLOC(ausgabedatei)
+            strcpy(ausgabedatei, argumente.input_file);
             
-            /* Wenn die Dateiendung der Eingabedatei .hc ist, wird die 
-             * Ausgabedatei genauso benannt, einzig der letzte Buchstabe des
-             * Namens wird durch d ersetzt, so dass die Endung .hd entsteht.
-             */
-            if(dateiendung != NULL && strcmp(dateiendung, ".hc") == 0) {
-                strncpy(ausgabedatei, argumente.input_file, (size_t) (input_file_laenge - 1));
-                ausgabedatei = strcat(ausgabedatei, "d");
-            } else {
-                strncpy(ausgabedatei, argumente.input_file, (size_t) input_file_laenge);
-                ausgabedatei = strcat(ausgabedatei, ".hd");
+            if(strcmp(ausgabedatei+strlen(ausgabedatei)-3-1, ".hc") == 0)
+            {
+                /* dateiname endet in .hc */
+                ausgabedatei[strlen(ausgabedatei)-1] = 'd';
+            }
+            else
+            {
+                /* dateiname endent NICHT in .hc */
+                strcat(ausgabedatei, ".hd");
             }
             argumente.output_file = ausgabedatei;
         }
         
-        //decompress(argumente.input_file, argumente.output_file);
+        decompress(argumente.input_file, argumente.output_file);
     }
     return EXIT_SUCCESS;
 }
@@ -105,8 +103,8 @@ int main (int argc, char **argv) {
 
 static void print_help(char* programm)
 {
-    char* einrueckung = "";
-    char* programmname = NULL;
+    char *einrueckung;
+    char *programmname = NULL;
     int laenge_programmname; 
     int i;
     if(programm != NULL) 
@@ -115,7 +113,7 @@ static void print_help(char* programm)
         programmname++;
     }
     /* Kann der Name des Programms nicht ermittelt werden, wird dieser 
-     * auf den Standardwert "hufmann" gesetzt.
+     * auf den Standardwert "huffmann" gesetzt.
      */
     if(programmname == NULL) 
     {
@@ -124,9 +122,13 @@ static void print_help(char* programm)
     
     laenge_programmname = (int) strlen(programmname);
     
+    einrueckung = malloc(laenge_programmname*sizeof(char));
+    ASSERT_ALLOC(einrueckung)
+    
     for(i = 0; i < laenge_programmname; i++) {
-        einrueckung = strcat(einrueckung, " ");
+        einrueckung[i] = ' ';
     }
+    einrueckung[i] = 0;
     
     
     /* Hilfetext */
@@ -159,6 +161,7 @@ static void print_help(char* programm)
             "  %s                       Ergebnis in der datei.exe.hd.\n",
             programmname, einrueckung, einrueckung);
     printf( "  > %s -c d.txt d.comp ... Komprimiert die Datei d.txt und\n"
-            "  %s                       speichert das Ergebnis in d.comp.",
+            "  %s                       speichert das Ergebnis in d.comp.\n",
             programmname, einrueckung);
+    free(einrueckung);
 }

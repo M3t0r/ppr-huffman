@@ -84,6 +84,46 @@ BOOL test_read_bitarray()
     return result;
 }
 
+BOOL test_write()
+{
+    BITFILE *fd;
+    BITARRAY *ba;
+    BOOL result;
+    
+    fd = bitfile_open("bitfile_write.txt", TRUE);
+    
+    bitfile_write_byte(fd, 'T');
+    bitfile_write_bit(fd, FALSE);
+    bitfile_write_bit(fd, TRUE);
+    bitfile_write_bit(fd, TRUE);
+    bitfile_write_byte(fd, 43);
+    ba = bitarray_new();
+    bitarray_push_byte(ba, 155);
+    bitarray_push(ba, TRUE);
+    bitarray_push(ba, FALSE);
+    bitarray_push(ba, TRUE);
+    bitarray_push(ba, FALSE);
+    bitarray_push(ba, FALSE);
+    bitfile_write_bitarray(fd, ba);
+    
+    bitfile_write_bit(fd, FALSE);
+    bitfile_write_bit(fd, FALSE);
+    bitfile_write_bit(fd, TRUE);
+    bitfile_write_bit(fd, TRUE);
+    
+    bitfile_close(&fd);
+    
+    fd = bitfile_open("bitfile_write.txt", FALSE);
+    result = bitfile_read_byte(fd) == 'T'
+        && bitfile_read_byte(fd) == 'e'
+        && bitfile_read_byte(fd) == 's'
+        && bitfile_read_byte(fd) == 't'
+        && (bitfile_read_byte(fd) & 0xF0) == '0';
+    
+    bitfile_close(&fd);
+    
+    return result;
+}
 
 
 testunit testsuit[] = {
@@ -92,6 +132,7 @@ testunit testsuit[] = {
     {"datei schliessen", test_close},
     {"read bit", test_read_bit},
     {"read byte", test_read_byte},
-    {"read bitarray", test_read_bitarray}
+    {"read bitarray", test_read_bitarray},
+    {"write bitarray", test_write}
 };
-int nr_of_unittests = 6;
+int nr_of_unittests = 7;

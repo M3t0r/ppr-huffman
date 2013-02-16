@@ -34,6 +34,7 @@ BITARRAY *bitarray_new()
     
     ba->capacity = BITARRAY_INITIAL_CAPACITY;
     ba->length = 0;
+    ba->offset = 0;
     
     return ba;
 }
@@ -62,8 +63,8 @@ void bitarray_push(BITARRAY *ba, BOOL bit)
 {
     BYTE mask;
     
-    int index = ba->length++;
-    if(ba->length >= ba->capacity)
+    int index = ba->offset+ba->length++;
+    if(ba->length+ba->offset >= ba->capacity)
 	{
         bitarray_grow(ba);
     }   
@@ -83,7 +84,7 @@ void bitarray_push_byte(BITARRAY *ba, BYTE byte)
 
 BOOL bitarray_pop(BITARRAY *ba)
 {
-    int index = --ba->length;
+    int index = --ba->length+ba->offset;
     return bitarray_get_bit(ba, index);
 }
 
@@ -95,6 +96,7 @@ int bitarray_length(BITARRAY *ba)
 
 BOOL bitarray_get_bit(BITARRAY *ba, int index)
 {
+    index += ba->offset;
     return (ba->data[index / 8] >> (7-(index % 8))) & 1;
 }
 
@@ -105,9 +107,9 @@ BYTE bitarray_get_byte(BITARRAY *ba, int index)
 	{
         return 0;
     }
-    else if(index % 8 == 0)
+    else if((index+ba->offset) % 8 == 0)
 	{
-        return ba->data[index/8];
+        return ba->data[(index+ba->offset)/8];
     }
     else
     {
@@ -121,6 +123,28 @@ BYTE bitarray_get_byte(BITARRAY *ba, int index)
     }
 }
 
+void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2)
+{
+    int i;
+    for(i = 0; i < bitarray_length(ba2); i++)
+    {
+        bitarray_push(ba1, bitarray_get_bit(ba2, i));
+    }
+}
+
+void bitarray_remove_front(BITARRAY *ba, int length)
+{
+    ba->offset += length;
+    ba->length -= length;
+    
+    if(ba->offset >= BITARRAY_INCREMENT)
+    {
+        BYTE *new_data = malloc(ba->length / 8 +1);
+        ASSERT_ALLOC(new_data)
+        memcpy(new_data, ba->data+(ba->offset/8), ba->length/8 +1);
+        ba->offset = ba->offset % 8;
+    }
+}
 
 BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 {
@@ -142,6 +166,14 @@ BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 	}
 	else
 	{
-		return !memcmp(ba1->data, ba2->data, ba1->length / 8);
+	    int i;
+	    for(i = 0; i < ba1->length; i++)
+	    {
+	        if(bitarray_get_bit(ba1, i) != bitarray_get_bit(ba2, i))
+	        {
+	            return FALSE;
+	        }
+	    }
 	}
+	return TRUE;
 }
