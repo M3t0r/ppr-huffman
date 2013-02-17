@@ -10,12 +10,26 @@
 *.so
 *.so.*
 *.dylib
+*.dSYM
 
 # Executables
 *.exe
 *.out
 *.app
 ppr-huffman
+bitdump
+tests/bitarray
+tests/bitfile
+tests/bitfile_write.txt
+tests/code
+tests/codebuch
+tests/frequency
+tests/heap
+
+
+
+*.hc
+*.hd
 
 # heißen die so?
 thumbs.db

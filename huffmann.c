@@ -105,6 +105,17 @@ void compress(char *in_filename, char *out_filename)
         
         codebuch = codebuch_structure(p_codebuch);
         bitfile_write_bitarray(p_output, codebuch);
+                
+        for(i = 0; i < bitarray_length(codebuch); i++)
+        {
+            if(((i/8) % 10) == 0 && i%8 == 0)
+                printf("\n%6d: ", i);
+        
+            else if(i%8 == 0)
+                printf(" ");
+    
+            printf("%d", bitarray_get_bit(codebuch, i));
+        }
         
         benutzte_bits = (bitarray_length(codebuch) + 3) % 8;
         
@@ -205,7 +216,6 @@ void decompress(char *in_filename, char *out_filename)
         for(i = 0; i < 256; i++)
         {
             int anzahl_byte = bitfile_read_bit(p_input) << 2 | bitfile_read_bit(p_input) << 1 | bitfile_read_bit(p_input);
-            if(anzahl_byte != 0) printf("%x hat %d bytes\n", i, anzahl_byte);
             for(; anzahl_byte > 0; anzahl_byte--)
             {
                 anzahl_zeichen[i] = (anzahl_zeichen[i] << 8) | bitfile_read_byte(p_input);
@@ -214,9 +224,7 @@ void decompress(char *in_filename, char *out_filename)
         
         p_codebuch = codebuch_new_from_frequency(anzahl_zeichen);
         pipeline = bitarray_new();
-        
-        frequency_print(codebuch_get_baum(p_codebuch), 0, 1);
-        
+                
         do
         {
             unsigned int verwendete_bits;
@@ -245,9 +253,26 @@ void decompress(char *in_filename, char *out_filename)
                 bitfile_write_byte(p_output, zeichen);
                 DPRINT_E(zeichen, c);
             }
-        } while(bitarray_length(pipeline) != 0);
+        } while(!bitfile_is_eof(p_input));
+        bitarray_print(pipeline);
         
-        
+/*
+k 0b1000
+a 0b0010
+r 0b101
+t 0b0011
+o 0b0000
+f 0b11
+f 0b11
+e 0b011
+l 0b0001
+p 0b1001
+u 0b0100
+f 0b11
+f 0b11
+e 0b011
+r 0b101
+*/
         
     }
     

@@ -177,3 +177,18 @@ BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 	}
 	return TRUE;
 }
+
+void bitarray_print_adv(BITARRAY *ba, FILE *stream, BOOL print_prefix)
+{
+    int i;
+    if(print_prefix)
+        fprintf(stream, "0b");
+    
+    for(i = 0; i < bitarray_length(ba); i++)
+        fprintf(stream, bitarray_get_bit(ba, i)?"1":"0");
+}
+
+void bitarray_print(BITARRAY *ba)
+{
+    bitarray_print_adv(ba, stdout, TRUE);
+}

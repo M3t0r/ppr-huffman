@@ -94,6 +94,10 @@ void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2);
 
 void bitarray_remove_front(BITARRAY *ba, int length);
 
+void bitarray_print_adv(BITARRAY *ba, FILE *stream, BOOL print_prefix);
+
+void bitarray_print(BITARRAY *ba);
+
 /**
  * Gibt zurueck, ob die beiden Bitarrays gleich sind.
  * @param ba1 Das eine Bitarray.

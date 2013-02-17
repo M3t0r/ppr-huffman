@@ -51,6 +51,9 @@ BOOL test_read_bit()
     return result;
 }
 
+/*'r' :114 - 0b01110010 << 1: 11100100: 128+64+32+4: 228 */
+/*'a' :97 - 0b01100001 << 1: 11000010: 128+64+2 :194 */
+
 BOOL test_read_byte()
 {
     BOOL result;
@@ -58,7 +61,10 @@ BOOL test_read_byte()
     
     result = bitfile_read_byte(fd) == 'F'
         && bitfile_read_bit(fd) == FALSE
-        && bitfile_read_byte(fd) == ('r'<<1);
+        && bitfile_read_byte(fd) == ('r'<<1)
+        && bitfile_read_byte(fd) == ('a'<<1)
+        && bitfile_read_byte(fd) == ('n'<<1)
+        && bitfile_read_byte(fd) == ('z'<<1);
     
     bitfile_close(&fd);
     

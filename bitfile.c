@@ -97,6 +97,7 @@ BOOL bitfile_read_bit(BITFILE *fd)
 BYTE bitfile_read_byte(BITFILE *fd)
 {
     BYTE byte = 0;
+    int i;
     
     if(fd->write_mode)
     {
@@ -104,8 +105,19 @@ BYTE bitfile_read_byte(BITFILE *fd)
         exit(EXIT_FAILURE);
     }
     
+    for(i = 0; i < 8; i++)
+    {
+        byte = (byte << 1) | bitfile_read_bit(fd);
+    }
+    if(fd->eof)
+        return 0;
+    return byte;
+    
+    
+    /* sieht richtig aus, funktioniert aber nicht */
     if(fd->buffer_index > 7)
     {
+        /* alles im puffer ist gelesen, lese ein neues byte und gib es zurück */
         bitfile_fill_buffer(fd);
         if(fd->eof)
 		{
@@ -116,12 +128,13 @@ BYTE bitfile_read_byte(BITFILE *fd)
     }
     else
     {
+        /* wir müssen uns unser byte aus 2 teil bytes zusammen setzen */
         int index;
         BYTE buffer;
         
         index = fd->buffer_index;
         buffer = fd->buffer;
-
+        
         byte = fd->buffer << index;
 
         bitfile_fill_buffer(fd);
