@@ -14,6 +14,7 @@ static void grow(BITARRAY *ba)
 	}
 }
 
+/* tuts aufm linux irgendwie nicht Oo */
 static void shrink(BITARRAY *ba)
 {
 	if ((ba != NULL) && (ba->length <= (ba->capacity - STEPS)))
@@ -78,7 +79,7 @@ BOOL bitarray_pop(BITARRAY *ba)
 		unsigned char mask = 0x80;
 		BYTE byte = ba->data[(--ba->length) / 8];
 		retval = byte & (mask >> (ba->length % 8));
-		shrink(ba);
+		/*shrink(ba);*/
 	}
 	
 	return ((retval == 0) ? FALSE : TRUE);
