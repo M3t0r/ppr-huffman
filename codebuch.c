@@ -205,23 +205,6 @@ CODEBUCH* codebuch_new_from_structure(BITARRAY* p_ba)
 	unsigned int index;
 	int i;
 	
-	/* 1kB Version */
-	/*if (bitarray_length(p_ba) < 256 * 32)
-	{
-		printf("Bitarray zu klein für Codebuch!\n");
-		return NULL;
-	}
-	
-	for (i = 0; i < 256; i++)
-	{
-		unsigned int index = i * 32;
-		
-		frequencies[i] = (bitarray_get_byte(p_ba, index) << 24) 
-						| (bitarray_get_byte(p_ba, index + 8) << 16) 
-						| (bitarray_get_byte(p_ba, index + 16) << 8) 
-						| bitarray_get_byte(p_ba, index + 24);
-	}*/
-	
 	index = 0;
 	for (i = 0; i < 256; i++)
 	{

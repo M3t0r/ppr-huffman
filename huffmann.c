@@ -74,7 +74,7 @@ void compress(char *in_filename, char *out_filename)
         
         fclose(p_input);
         p_input = fopen(in_filename, "rb");
-		if(p_input == NULL)
+		if (p_input == NULL)
 		{ 
 			fprintf(stderr, "Fehler beim Öffnen der Eingabedatei.\n"
 					"Stimmt der Pfad: '%s'?\n", in_filename);
@@ -82,14 +82,12 @@ void compress(char *in_filename, char *out_filename)
 		} 
     
         p_codebuch = codebuch_new_from_frequency(anzahl_zeichen);
-        if(p_codebuch == NULL)
+        if (p_codebuch == NULL)
         {
             fprintf(stderr, "Beim Erstellen des Codebuchs trat ein Fehler auf.\n\n");
             exit(EXIT_FAILURE);
         }
         
-
-
         /* Ausgabedatei erzeugen */
         
         /* platz für benutzte_bits am anfang lassen */
@@ -99,17 +97,6 @@ void compress(char *in_filename, char *out_filename)
         
         codebuch = codebuch_structure(p_codebuch);
         bitfile_write_bitarray(p_output, codebuch);
-                
-        for(i = 0; i < bitarray_length(codebuch); i++)
-        {
-            if(((i/8) % 10) == 0 && i%8 == 0)
-                printf("\n%6d: ", i);
-        
-            else if(i%8 == 0)
-                printf(" ");
-    
-            printf("%d", bitarray_get_bit(codebuch, i));
-        }
         
         benutzte_bits = (bitarray_length(codebuch) + 3) % 8;
         
@@ -204,23 +191,14 @@ void decompress(char *in_filename, char *out_filename)
         BITARRAY *pipeline;
         unsigned int anzahl_zeichen[256];
         int i;
-<<<<<<< HEAD
-        
-=======
-                
->>>>>>> tuts jetzt
+
         memset(anzahl_zeichen, 0, sizeof(unsigned int) * 256);
         
         /* häufigkeit der zeichen einlesen */
         for(i = 0; i < 256; i++)
         {
-<<<<<<< HEAD
             int anzahl_byte = bitfile_read_bit(p_input) << 2 | bitfile_read_bit(p_input) << 1 | bitfile_read_bit(p_input);
             for(; anzahl_byte > 0; anzahl_byte--)
-=======
-            int groesse_anzahl = bitfile_read_bit(p_input) << 2 | bitfile_read_bit(p_input) << 1 | bitfile_read_bit(p_input);
-            for(; groesse_anzahl > 0; groesse_anzahl--)
->>>>>>> tuts jetzt
             {
                 anzahl_zeichen[i] = (anzahl_zeichen[i] << 8) | bitfile_read_byte(p_input);
             }            
@@ -258,31 +236,7 @@ void decompress(char *in_filename, char *out_filename)
                 
                 fputc(zeichen, p_output);
             }
-<<<<<<< HEAD
-        } while(!bitfile_is_eof(p_input));
-        bitarray_print(pipeline);
-        
-/*
-k 0b1000
-a 0b0010
-r 0b101
-t 0b0011
-o 0b0000
-f 0b11
-f 0b11
-e 0b011
-l 0b0001
-p 0b1001
-u 0b0100
-f 0b11
-f 0b11
-e 0b011
-r 0b101
-*/
-        
-=======
         } while (!bitfile_is_eof(p_input) || (bitarray_length(pipeline) != 0));
->>>>>>> tuts jetzt
     }
     
     fclose(p_output);

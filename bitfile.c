@@ -96,62 +96,6 @@ BOOL bitfile_read_bit(BITFILE *fd)
 
 BYTE bitfile_read_byte(BITFILE *fd)
 {
-<<<<<<< HEAD
-    BYTE byte = 0;
-    int i;
-    
-    if(fd->write_mode)
-    {
-        fprintf(stderr, "Datei im schreibe Modus geöffnet, kann nicht lesen.\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    for(i = 0; i < 8; i++)
-    {
-        byte = (byte << 1) | bitfile_read_bit(fd);
-    }
-    if(fd->eof)
-        return 0;
-    return byte;
-    
-    
-    /* sieht richtig aus, funktioniert aber nicht */
-    if(fd->buffer_index > 7)
-    {
-        /* alles im puffer ist gelesen, lese ein neues byte und gib es zurück */
-        bitfile_fill_buffer(fd);
-        if(fd->eof)
-		{
-            return 0;
-        }
-        fd->buffer_index = 8;
-        byte = fd->buffer;
-    }
-    else
-    {
-        /* wir müssen uns unser byte aus 2 teil bytes zusammen setzen */
-        int index;
-        BYTE buffer;
-        
-        index = fd->buffer_index;
-        buffer = fd->buffer;
-        
-        byte = fd->buffer << index;
-
-        bitfile_fill_buffer(fd);
-        if(fd->eof)
-        {
-            fd->buffer_index = index;
-            fd->buffer = buffer;
-            return 0;
-        }
-
-        byte |= (fd->buffer >> (8-index)) & ~(0xFF<<index);
-        fd->buffer_index = 8-index;
-    }
-    
-    return byte;
-=======
 	BYTE retval = 0;
 	int i;
 	for (i = 0; i < 8; i++)
@@ -159,7 +103,6 @@ BYTE bitfile_read_byte(BITFILE *fd)
 		retval = (retval << 1) | bitfile_read_bit(fd);
 	}
 	return retval;
->>>>>>> tuts jetzt
 }
 
 BITARRAY *bitfile_read_bitarray(BITFILE *fd, int length)
