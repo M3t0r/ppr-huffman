@@ -80,17 +80,7 @@ int main (int argc, char **argv) {
             char *ausgabedatei = malloc(strlen(argumente.input_file)+ 4);
             ASSERT_ALLOC(ausgabedatei)
             strcpy(ausgabedatei, argumente.input_file);
-            
-            if(strcmp(ausgabedatei+strlen(ausgabedatei)-3-1, ".hc") == 0)
-            {
-                /* dateiname endet in .hc */
-                ausgabedatei[strlen(ausgabedatei)-1] = 'd';
-            }
-            else
-            {
-                /* dateiname endent NICHT in .hc */
-                strcat(ausgabedatei, ".hd");
-            }
+            strcat(ausgabedatei, ".hd");
             argumente.output_file = ausgabedatei;
         }
         

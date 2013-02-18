@@ -195,7 +195,7 @@ CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256])
 	
 	retval = codebuch_new(heap_get_element(H, 0), count, frequencies);
 	build_codebuch(retval->baum, bitarray_new(), retval);
-	
+		
 	return retval;
 }
 
@@ -351,14 +351,16 @@ unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned 
 	i = 0;
 	tmp = p_cb->baum;
 	/* < oder <= ???*/
-	while ((i <= bitarray_length(p_code)) && (tmp != NULL))
+	while ((i < bitarray_length(p_code)) && (tmp != NULL))
 	{
 		if (frequency_is_leaf(tmp))
 		{
+			/*printf(": '%c'\n", frequency_get_zeichen(tmp));*/
 			return frequency_get_zeichen(tmp);
 		}
 		else
 		{
+			/*printf("%d", bitarray_get_bit(p_code, i));*/
 			if (bitarray_get_bit(p_code, i))
 			{
 				tmp = frequency_get_right(tmp);
@@ -376,6 +378,13 @@ unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned 
 		}
 	}
 	
+	if (frequency_is_leaf(tmp))
+	{
+		/*printf(": '%c'\n", frequency_get_zeichen(tmp));*/
+		return frequency_get_zeichen(tmp);
+	}
+	
+	/*printf(": error\n");*/
 	p_cb->last_char_was_error = TRUE;
 	return 0;
 }
@@ -392,16 +401,6 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 	
 	retval = bitarray_new();
 	
-	/* 1kB version */
-	/*for (i = 0; i < 256; i++)
-	{
-		int j;
-		for (j = 3; j >= 0; j--)
-		{
-			bitarray_push_byte(retval, (p_cb->frequencies[i] >> (j * 8)) & 0xFF);
-		}
-	}*/
-	
 	for (i = 0; i < 256; i++)
 	{
 		if (p_cb->frequencies[i] == 0)
@@ -409,6 +408,7 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 			bitarray_push(retval, (BOOL)0);
 			bitarray_push(retval, (BOOL)0);
 			bitarray_push(retval, (BOOL)0);
+
 		}
 		else if ((double)p_cb->frequencies[i] >= pow(2, 3 * 8))
 		{
@@ -419,9 +419,7 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 24) & 0x000000FF);
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 16) & 0x000000FF);
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 8) & 0x000000FF);
-			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
-			
-			/*printf("pushed %c: %u in 4 Bytes\n", i, p_cb->frequencies[i]);*/
+			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);		
 		}
 		else if ((double)p_cb->frequencies[i] >= pow(2, 2 * 8))
 		{
@@ -432,8 +430,6 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 16) & 0x000000FF);
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 8) & 0x000000FF);
 			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
-			
-			/*printf("pushed %c: %u in 3 Bytes\n", i, p_cb->frequencies[i]);*/
 		}
 		else if ((double)p_cb->frequencies[i] >= pow(2, 1 * 8))
 		{
@@ -443,8 +439,6 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 			
 			bitarray_push_byte(retval, (p_cb->frequencies[i] >> 8) & 0x000000FF);
 			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
-			
-			/*printf("pushed %c: %u in 2 Bytes\n", i, p_cb->frequencies[i]);*/
 		}
 		else if ((double)p_cb->frequencies[i] >= pow(2, 0 * 8))
 		{
@@ -453,8 +447,6 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 			bitarray_push(retval, (BOOL)1);
 			
 			bitarray_push_byte(retval, p_cb->frequencies[i] & 0x000000FF);
-			
-			/*printf("pushed %c: %u in 1 Bytes\n", i, p_cb->frequencies[i]);*/
 		}
 		else
 		{
@@ -543,7 +535,6 @@ BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 		return TRUE;
 	}
 }
-
 
 FREQUENCY* codebuch_get_baum(CODEBUCH* p_cb)
 {

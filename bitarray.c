@@ -1,149 +1,155 @@
-/*****************************************************************************
- * Includes
- *****************************************************************************/
 #include "bitarray.h"
-#include <stdlib.h>
 #include <string.h>
 
+#define STEPS (4*8)
 
-/*****************************************************************************
- * Konstanten
- *****************************************************************************/
-#define BITARRAY_INITIAL_CAPACITY   (4*8)
-#define BITARRAY_INCREMENT          (4*8)
+static void grow(BITARRAY *ba)
+{
+	if ((ba != NULL) && (ba->length >= ba->capacity))
+	{
+		ba->data = realloc(ba->data, (ba->capacity + STEPS) * sizeof(BYTE));
+		ASSERT_ALLOC(ba->data);
+		memset(ba->data + (ba->capacity / 8), 0, STEPS);
+		ba->capacity += STEPS;
+	}
+}
 
+static void shrink(BITARRAY *ba)
+{
+	if ((ba != NULL) && (ba->length <= (ba->capacity - STEPS)))
+	{
+		ba->data = realloc(ba->data, (ba->capacity - STEPS) * sizeof(BYTE));
+		ASSERT_ALLOC(ba->data);
+		ba->capacity -= STEPS;
+	}
+}
 
-/*****************************************************************************
- * Funktionsdefintionen
- *****************************************************************************/
 BITARRAY *bitarray_new()
 {
-    BITARRAY *ba = malloc(sizeof(BITARRAY));
-    if(ba == NULL)
-	{
-        return NULL;
-    }
-    memset(ba, 0, sizeof(BITARRAY));
-    
-    ba->data = malloc(BITARRAY_INITIAL_CAPACITY/8);
-    if(ba->data == NULL)
-    {
-        free(ba);
-        return NULL;
-    }
-    
-    ba->capacity = BITARRAY_INITIAL_CAPACITY;
-    ba->length = 0;
-    ba->offset = 0;
-    
-    return ba;
+	BITARRAY* retval 	= malloc(sizeof(BITARRAY));
+	ASSERT_ALLOC(retval);
+	retval->data 		= NULL;
+	retval->capacity 	= 0;
+	retval->length 		= 0;
+	grow(retval);
+	return retval;
 }
 
 void bitarray_free(BITARRAY **ba)
 {
-    free((*ba)->data);
-    free((*ba));
-    *ba = NULL;
-}
-
-
-void bitarray_grow(BITARRAY *ba)
-{
-    ba->capacity = (ba->capacity+BITARRAY_INCREMENT)/8;
-    ba->data = realloc(ba->data, ba->capacity);
-    if(ba->data == NULL)
-    {
-        printf("Could not grow bitarray.\nAborting\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
-
-void bitarray_push(BITARRAY *ba, BOOL bit)
-{
-    BYTE mask;
-    
-    int index = ba->offset+ba->length++;
-    if(ba->length+ba->offset >= ba->capacity)
+	if ((ba != NULL) && (*ba != NULL))
 	{
-        bitarray_grow(ba);
-    }   
-    mask = 0x01 << (7-(index % 8));
-    ba->data[index / 8] =  (ba->data[index / 8] & ~mask) | (bit << (7-(index % 8)));
+		free((*ba)->data);
+		free(*ba);
+		*ba = NULL;
+	}
 }
 
-void bitarray_push_byte(BITARRAY *ba, BYTE byte)
+void bitarray_push(BITARRAY *ba, BOOL d)
 {
-    int i;
-    for(i = 0; i < 8; i++)
-    {
-        bitarray_push(ba, ((byte<<i)&128) == 128);
-    }
+	if (ba != NULL)
+	{
+		unsigned char mask = 0x01 & d;
+		grow(ba);
+		ba->data[ba->length / 8] |= mask << (7 - (ba->length % 8));
+		ba->length++;
+	}
 }
 
+void bitarray_push_byte(BITARRAY* ba, BYTE d)
+{
+	if (ba != NULL)
+	{
+		char i;
+		unsigned char mask = 0x80;
+		for (i = 0; i < 8; i++)
+		{
+			bitarray_push(ba, ((d & (mask >> i)) ? TRUE : FALSE));
+		}
+	}
+}
 
 BOOL bitarray_pop(BITARRAY *ba)
 {
-    int index = --ba->length+ba->offset;
-    return bitarray_get_bit(ba, index);
+	BOOL retval = 0;
+	
+	if ((ba != NULL) && (ba->length > 0)) 
+	{
+		unsigned char mask = 0x80;
+		BYTE byte = ba->data[(--ba->length) / 8];
+		retval = byte & (mask >> (ba->length % 8));
+		shrink(ba);
+	}
+	
+	return ((retval == 0) ? FALSE : TRUE);
 }
 
-int bitarray_length(BITARRAY *ba)
+unsigned int bitarray_length(BITARRAY *ba)
 {
-    return ba->length;
+	if (ba != NULL)
+	{
+		return ba->length;
+	}
+	return 0;
 }
-
 
 BOOL bitarray_get_bit(BITARRAY *ba, int index)
 {
-    index += ba->offset;
-    return (ba->data[index / 8] >> (7-(index % 8))) & 1;
+	BOOL retval = 0;
+	
+	if ((ba != NULL) && (index < ba->length))
+	{
+		unsigned char mask = 0x80;
+		BYTE byte = ba->data[index / 8];
+		retval = byte & (mask >> (index % 8));
+	}
+	
+	return ((retval == 0) ? FALSE : TRUE);
 }
-
 
 BYTE bitarray_get_byte(BITARRAY *ba, int index)
 {
-    if(index + 8 > ba->length)
+	BYTE retval = 0;
+	if ((ba != NULL) && (index + 8 <= ba->length))
 	{
-        return 0;
-    }
-    else if((index+ba->offset) % 8 == 0)
-	{
-        return ba->data[(index+ba->offset)/8];
-    }
-    else
-    {
-        BYTE mask = 0xFF >> (index%8);
-        BYTE byte;
-        
-        byte  = (ba->data[index/8]   &  mask) << (index%8);
-        byte |= (ba->data[index/8+1] & ~mask) >> (8 - (index%8));
-        
-        return byte;
-    }
+		int i;
+		for (i = 0; i < 8; i++)
+		{
+			retval = (retval << 1) | bitarray_get_bit(ba, index++);
+		}
+	}
+	return retval;
 }
 
 void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2)
 {
-    int i;
-    for(i = 0; i < bitarray_length(ba2); i++)
-    {
-        bitarray_push(ba1, bitarray_get_bit(ba2, i));
+	if ((ba1 != NULL) && (ba2 != NULL))
+	{
+		int i;
+		for(i = 0; i < bitarray_length(ba2); i++)
+		{
+			bitarray_push(ba1, bitarray_get_bit(ba2, i));
+		}
     }
 }
 
 void bitarray_remove_front(BITARRAY *ba, int length)
 {
-    ba->offset += length;
-    ba->length -= length;
-    
-    if(ba->offset >= BITARRAY_INCREMENT)
-    {
-        BYTE *new_data = malloc(ba->length / 8 +1);
-        ASSERT_ALLOC(new_data)
-        memcpy(new_data, ba->data+(ba->offset/8), ba->length/8 +1);
-        ba->offset = ba->offset % 8;
-    }
+	if ((ba != NULL) && (length <= ba->length))
+	{
+		BITARRAY *tmp = bitarray_new();
+		int i;
+		
+		for (i = length; i < ba->length; i++)
+		{
+			bitarray_push(tmp, bitarray_get_bit(ba, i));
+		}
+		
+		free(ba->data);
+		ba->data 		= tmp->data;
+		ba->length 		= tmp->length;
+		ba->capacity 	= tmp->capacity;
+	}
 }
 
 BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
@@ -178,6 +184,7 @@ BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 	return TRUE;
 }
 
+<<<<<<< HEAD
 void bitarray_print_adv(BITARRAY *ba, FILE *stream, BOOL print_prefix)
 {
     int i;
@@ -192,3 +199,5 @@ void bitarray_print(BITARRAY *ba)
 {
     bitarray_print_adv(ba, stdout, TRUE);
 }
+=======
+>>>>>>> tuts jetzt

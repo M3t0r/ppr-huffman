@@ -82,9 +82,22 @@ BOOL test_code_for_char(void)
 		
 	for (i = 0; i < len; i++)
 	{
-		if (!bitarray_equals(codebuch_code_for_char(cb1, chars[i]), codebuch_code_for_char(cb2, chars[i])))
+		BITARRAY* ba1 = codebuch_code_for_char(cb1, chars[i]);
+		BITARRAY* ba2 = codebuch_code_for_char(cb2, chars[i]);
+		if (!bitarray_equals(ba1, ba2))
 		{
+			int j;
 			printf("codes für '%c' unterschiedlich\n", chars[i]);
+			for (j = 0; j < bitarray_length(ba1); j++)
+			{
+				printf("%d", bitarray_get_bit(ba1, j));
+			}
+			printf("\n<->\n");
+			for (j = 0; j < bitarray_length(ba2); j++)
+			{
+				printf("%d", bitarray_get_bit(ba2, j));
+			}
+			printf("\n");
 			return FALSE;
 		}
 	}
@@ -134,7 +147,15 @@ BOOL test_char_for_code(void)
 		}
 	}
 	
-	return TRUE;
+	ba = bitarray_new();
+	bitarray_push(ba, FALSE);
+	bitarray_push(ba, FALSE);
+	bitarray_push(ba, FALSE);
+	bitarray_push(ba, FALSE);
+	bitarray_push(ba, FALSE);
+	bitarray_push(ba, FALSE);
+	
+	return TRUE && (codebuch_char_for_code(cb1, ba, NULL) == 'O');
 }
 
 BOOL test_last_char_was_error(void)
@@ -201,10 +222,7 @@ static BOOL test_undso(char* orig_str)
 	char* test_str 	= malloc(len * sizeof(char) + 1);
 	
 	/* frequencies nullen */
-	for (i = 0; i < 256; i++)
-	{
-		f[i] = 0;
-	}
+	memset(f, 0, sizeof(unsigned int) * 256);
 	
 	/* frequencies setzen */
 	for (i = 0; i < len; i++)
@@ -212,7 +230,7 @@ static BOOL test_undso(char* orig_str)
 		f[(int)orig_str[i]]++;
 	}
 	
-	/* versciedene zeichen zählen */
+	/* verschiedene zeichen zählen */
 	count = 0;
 	for (i = 0; i < 256; i++)
 	{
@@ -243,13 +261,12 @@ static BOOL test_undso(char* orig_str)
 			retval &= bitarray_equals(ba1, ba2);
 			if (!retval)
 			{
-				/*printf("codes für '%c' unterschiedlich\n", (unsigned char)i);*/
+				printf("codes für '%c' unterschiedlich\n", (unsigned char)i);
 				return FALSE;
 			}
 			else
 			{
 				codes[count] = ba1;
-				/*printf("codes[%u]: %p\n", count, codes[count]);*/
 				count++;
 			}
 		}
@@ -262,39 +279,29 @@ static BOOL test_undso(char* orig_str)
 	{
 		unsigned int j;
 		BITARRAY* tmp = codebuch_code_for_char(cb1, (unsigned char)orig_str[i]);
-		/*printf("code für '%c': ", orig_str[i]);
-		bitarray_print(tmp);*/
+
 		for (j = 0; j < (unsigned int)bitarray_length(tmp); j++)
 		{
 			bitarray_push(full_code, bitarray_get_bit(tmp, j));
 		}
 	}
 	
-	/*bitarray_print(full_code);*/
-	
 	/* test_str aus codes des orig_str wiederherstellen */
 	for (i = 0; i < len; i++)
 	{
 		unsigned int tmp = 0;
-		unsigned int j;
-		BITARRAY* tmp_ba = bitarray_new();
 		unsigned char zeichen = codebuch_char_for_code(cb1, full_code, &tmp);
+		bitarray_remove_front(full_code, tmp);
+				
 		if ((zeichen == 0) && codebuch_last_char_was_error(cb1))
 		{
-			/*printf("codebuch_last_char_was_error!\n");*/
+			printf("codebuch_last_char_was_error!\n");
 			return FALSE;
 		}
+		
 		test_str[i] = zeichen;
-		/*printf("soll: '%c' ist '%c': %u", orig_str[i], test_str[i], tmp);
-		printf("\n");*/
-		for (j = tmp; j < (unsigned int)bitarray_length(full_code); j++)
-		{
-			bitarray_push(tmp_ba, bitarray_get_bit(full_code, j));
-		}
-		full_code = tmp_ba;
 	}
-
-	/*printf("| '%s'\n| <->\n| '%s'\n", orig_str, test_str);*/
+	test_str[i] = '\0';
 		
 	return retval && !strncmp(orig_str, test_str, len);
 }
@@ -302,7 +309,50 @@ static BOOL test_undso(char* orig_str)
 BOOL test_all(void)
 {
 	return test_undso("DONAUDAMPFSCHIFFFAHRTSGESELLSCHAFT")
-		&& test_undso("Test");
+		&& test_undso("Test")
+		&& test_undso("Lorem ipsum dolor sit amet")
+		&& test_undso("The quick brown fox jumps over the lazy dog.");
+}
+
+BOOL test1(void)
+{
+	char* orig_ba = "110100000010000011110011101011110000000100111110010001010000010010010110001000001010111110001101011110101011101111110010001011001010101001"; 
+	char* test_str = malloc(strlen("DONAUDAMPFSCHIFFFAHRTSGESELLSCHAFT\n") * sizeof(char) + 1);
+	CODEBUCH* cb = build_test_codebuch();
+	BITARRAY* full_code = bitarray_new();
+	int i;
+	
+	for (i = 0; i < strlen(orig_ba); i++)
+	{
+		bitarray_push(full_code, ((orig_ba[i] == '0') ? FALSE : TRUE));
+	}
+	
+	while (bitarray_length(full_code) > 0)
+	{
+		unsigned int tmp = 0;
+		unsigned int j;
+		BITARRAY* tmp_ba = bitarray_new();
+		unsigned char zeichen = codebuch_char_for_code(cb, full_code, &tmp);
+		
+		if ((zeichen == 0) && codebuch_last_char_was_error(cb))
+		{
+			return FALSE;
+		}
+		
+		test_str[i] = zeichen;
+		
+		for (j = tmp; j < (unsigned int)bitarray_length(full_code); j++)
+		{
+			bitarray_push(tmp_ba, bitarray_get_bit(full_code, j));
+		}
+		
+		full_code = tmp_ba;
+	}
+	test_str[i] = '\0';
+
+	printf("| 'DONAUDAMPFSCHIFFFAHRTSGESELLSCHAFT\\n'\n| <->\n| '%s'\n", test_str);
+	
+	return !strcmp("DONAUDAMPFSCHIFFFAHRTSGESELLSCHAFT\n", test_str);
 }
 
 testunit testsuit[] = {

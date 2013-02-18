@@ -27,7 +27,6 @@ typedef struct {
     BYTE *data;
     unsigned int capacity;
     unsigned int length;
-    unsigned int offset;
 } BITARRAY;
 
 /*****************************************************************************
@@ -71,7 +70,7 @@ BOOL bitarray_pop(BITARRAY *ba);
  * @param ba Bitarray, dessen Laenge ermittelt werden soll.
  * @return Die Anzahl der im Bitarray enthaltenen Bits.
  */
-int bitarray_length(BITARRAY *ba);
+unsigned int bitarray_length(BITARRAY *ba);
 
 /**
  * Gibt das Bit an der Position index zurueck.

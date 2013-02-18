@@ -92,29 +92,6 @@ BOOL frequency_is_leaf(FREQUENCY* p_freq)
 	return ((p_freq != NULL) && (p_freq->left == NULL) && (p_freq->right == NULL));
 }
 
-/*@unused@*/
-/**
- * Gibt die Summe der Anzahlen der Frequenz und ihrer Kinder zurück.
- * @param p_freq FREQUENCY* Die Frequenz.
- * @return unsigned int 
- */
-static unsigned int frequency_get_summe(FREQUENCY* p_freq)
-{
-	return ((p_freq == NULL)
-            ? 0
-            : p_freq->anzahl 
-            				+ ((p_freq->left == NULL) 
-            					? 0 
-            					: p_freq->left->anzahl) 
-            				+ ((p_freq->right == NULL) 
-            					? 0 
-            					: p_freq->left->anzahl));
-	
-	/*return ((p_freq == NULL)
-            ? 0
-            : p_freq->anzahl + frequency_get_summe(p_freq->left) + frequency_get_summe(p_freq->right));*/
-}
-
 int cmp_frequency_haeufigkeiten(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
 {
     if (p_freq1 == NULL) 
@@ -148,8 +125,8 @@ void frequency_print(FREQUENCY* p_freq, int depth, int index)
 		printf("\t");
 	}
 	
-	/*printf("|-- ('%c':%u) @%d\n", p_freq->zeichen, p_freq->anzahl, index - 1);*/
-	printf("|-- ('%c':%u) @%d @%p\n", p_freq->zeichen, p_freq->anzahl, index - 1, p_freq);
+	printf("|-- ('%c':%u) @%d\n", p_freq->zeichen, p_freq->anzahl, index - 1);
+	/*printf("|-- ('%c':%u) @%d @%p\n", p_freq->zeichen, p_freq->anzahl, index - 1, p_freq);*/
 	frequency_print(p_freq->left, i + 1, index * 2);
 	frequency_print(p_freq->right, i + 1, (index * 2) + 1);
 	

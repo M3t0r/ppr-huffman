@@ -96,6 +96,7 @@ BOOL bitfile_read_bit(BITFILE *fd)
 
 BYTE bitfile_read_byte(BITFILE *fd)
 {
+<<<<<<< HEAD
     BYTE byte = 0;
     int i;
     
@@ -150,6 +151,15 @@ BYTE bitfile_read_byte(BITFILE *fd)
     }
     
     return byte;
+=======
+	BYTE retval = 0;
+	int i;
+	for (i = 0; i < 8; i++)
+	{
+		retval = (retval << 1) | bitfile_read_bit(fd);
+	}
+	return retval;
+>>>>>>> tuts jetzt
 }
 
 BITARRAY *bitfile_read_bitarray(BITFILE *fd, int length)
@@ -184,7 +194,7 @@ static void bitfile_write_buffer_to_file(BITFILE *fd)
 }
 
 void bitfile_write_bit(BITFILE *fd, BOOL bit)
-{   
+{
     if(!fd->write_mode)
     {
         fprintf(stderr, "Datei im lese Modus geöffnet, kann nicht schreiben.\n");
