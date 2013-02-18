@@ -1,6 +1,6 @@
 #!/bin/bash
 
-suits="bitarray bitfile heap code frequency codebuch"
+suits="bitarray bitfile heap code frequency codebuch diffs.sh"
 
 errors=0
 
