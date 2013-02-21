@@ -74,4 +74,6 @@ extern int cmp_codes_zeichen(CODE* p_code1, CODE* p_code2);
  */
 extern BOOL code_equals(CODE* c1, CODE* c2);
 
+extern unsigned char code_get_length(CODE* p_code);
+
 #endif

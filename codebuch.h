@@ -102,4 +102,6 @@ extern BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2);
  */
 extern FREQUENCY* codebuch_get_baum(CODEBUCH* p_cb);
 
+extern unsigned char codebuch_get_max_code_length(CODEBUCH* p_cb);
+
 #endif

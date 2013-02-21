@@ -131,3 +131,12 @@ BOOL code_equals(CODE* c1, CODE* c2)
 	}
 	return TRUE;
 }
+
+unsigned char code_get_length(CODE* p_code)
+{
+	if (p_code == NULL)
+	{
+		return 0;
+	}
+	return (unsigned char)bitarray_length(p_code->code);
+}

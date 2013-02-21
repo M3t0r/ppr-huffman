@@ -8,6 +8,11 @@
 
 #include <math.h>
 
+/*****************************************************************************
+ * Makrodefinition
+ *****************************************************************************/
+#define MAX(a, b) (((a) >= (b)) ? (a) : (b))
+
 
 /*****************************************************************************
  * Strukturdefinitionen
@@ -31,6 +36,9 @@ struct _CODEBUCH
 	 * ein Fehler auftrtitt
 	 */
 	BOOL			last_char_was_error;
+	
+	/* Die Größe des größten Codes */
+	unsigned char	max_code_length;
 };
 
 
@@ -80,19 +88,21 @@ static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2);
 static CODEBUCH* codebuch_new(FREQUENCY* p_baum, int num_codes, unsigned int freqs[256])
 {
 	int i;
-    CODEBUCH* retval 	= malloc(sizeof(CODEBUCH));
+    CODEBUCH* retval 		= malloc(sizeof(CODEBUCH));
     ASSERT_ALLOC(retval);
 
-	retval->baum 		= p_baum;
+	retval->baum 			= p_baum;
 
-    retval->codes 		= malloc((num_codes * sizeof(void*)));
+    retval->codes 			= malloc((num_codes * sizeof(void*)));
     ASSERT_ALLOC(retval->codes);
-    retval->codes_used 	= 0;
+    retval->codes_used 		= 0;
 
 	for (i = 0; i < 256; i++)
 	{
 		retval->frequencies[i] = freqs[i];
 	}
+	
+	retval->max_code_length = 0;
 	
     return retval;
 }
@@ -106,6 +116,8 @@ static void add_code(CODEBUCH* p_cb, CODE* p_code)
     if ((p_cb != NULL) && (p_cb->codes != NULL) && (p_code != NULL)) 
     {
     	long i;
+    	
+    	p_cb->max_code_length = MAX(p_cb->max_code_length, code_get_length(p_code));
     	
     	if (p_cb->codes_used == 0)
     	{
@@ -593,4 +605,13 @@ FREQUENCY* codebuch_get_baum(CODEBUCH* p_cb)
 		return NULL;
 	}
 	return p_cb->baum;
+}
+
+unsigned char codebuch_get_max_code_length(CODEBUCH* p_cb)
+{
+	if (p_cb == NULL)
+	{
+		return 0;
+	}
+	return p_cb->max_code_length;
 }
