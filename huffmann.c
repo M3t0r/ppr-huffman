@@ -261,7 +261,7 @@ void decompress(char *in_filename, char *out_filename)
             }*/
 			BYTE zeichen;
 			
-			if(bitarray_length(pipeline) < codebuch_get_max_code_length(p_codebuch)+8)
+			if(!bitfile_is_eof(p_input) && bitarray_length(pipeline) < codebuch_get_max_code_length(p_codebuch)+8)
 			{
 				BITARRAY *lese = bitfile_read_bitarray(p_input, codebuch_get_max_code_length(p_codebuch)+8);
 				bitarray_merge(pipeline, lese);
@@ -276,10 +276,14 @@ void decompress(char *in_filename, char *out_filename)
 				}
 			}
 			
-			zeichen = codebuch_get_char_for_code(p_codebuch, pipeline, &verwendete_bits);
-			fputc(zeichen, p_output);
+			zeichen = codebuch_char_for_code(p_codebuch, pipeline, &verwendete_bits);
+			if(verwendete_bits != 0)
+			{
+				fputc(zeichen, p_output);
+				bitarray_remove_front(pipeline, verwendete_bits);
+			}
 			
-        /*} while (!bitfile_is_eof(p_input) || (bitarray_length(pipeline) != 0));*/
+		/*} while (!bitfile_is_eof(p_input) || (bitarray_length(pipeline) != 0));*/
 		} while(verwendete_bits != 0);
     }
     
