@@ -43,7 +43,7 @@ $(BUILDDIR)%.c.o: %.c
 	@$(CC) $(CCFLAGS) -c $^ -o $@
 
 
-test: tests/bitarray tests/bitfile tests/heap tests/code tests/frequency tests/codebuch
+test: clean tests/bitarray tests/bitfile tests/heap tests/code tests/frequency tests/codebuch
 	@tests/test.sh
 
 tests/bitarray: bitarray.c tests/bitarray_test.c tests/testmain.c
@@ -68,7 +68,7 @@ clean:
 	-@rm -rf $(OUTPUT) $(BUILDDIR)
 	-@rm -rf tests/codebuch tests/frequency tests/heap tests/test tests/code tests/bitarray tests/bitfile tests/*.dSYM tests/bitfile_write.txt
 	-@rm -rf $(DOXYGEN_PATH)
-	-@rm $(SPLINT_LOG)
+	-@rm -rf $(SPLINT_LOG)
 	-@echo "clean!"
 	
 debug: clean

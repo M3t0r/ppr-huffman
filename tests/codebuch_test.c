@@ -137,7 +137,7 @@ BOOL test_char_for_code(void)
 		unsigned int tmp = 0;
 		unsigned char zeichen = codebuch_char_for_code(cb1, codes[i], &tmp);
 		
-		if ((zeichen == 0) && codebuch_last_char_was_error(cb1))
+		if ((zeichen == 0) && tmp == 0)
 		{
 			return FALSE;
 		}
@@ -156,13 +156,6 @@ BOOL test_char_for_code(void)
 	bitarray_push(ba, FALSE);
 	
 	return TRUE && (codebuch_char_for_code(cb1, ba, NULL) == 'O');
-}
-
-BOOL test_last_char_was_error(void)
-{
-	CODEBUCH* test_codebuch = build_test_codebuch();
-	unsigned char zeichen = codebuch_char_for_code(test_codebuch, NULL, NULL);
-	return (zeichen == 0) && codebuch_last_char_was_error(test_codebuch);
 }
 
 BOOL test_equals(void)
@@ -293,7 +286,7 @@ static BOOL test_undso(char* orig_str)
 		unsigned char zeichen = codebuch_char_for_code(cb1, full_code, &tmp);
 		bitarray_remove_front(full_code, tmp);
 				
-		if ((zeichen == 0) && codebuch_last_char_was_error(cb1))
+		if ((zeichen == 0) && tmp == 0)
 		{
 			printf("codebuch_last_char_was_error!\n");
 			return FALSE;
@@ -334,7 +327,7 @@ BOOL test1(void)
 		BITARRAY* tmp_ba = bitarray_new();
 		unsigned char zeichen = codebuch_char_for_code(cb, full_code, &tmp);
 		
-		if ((zeichen == 0) && codebuch_last_char_was_error(cb))
+		if ((zeichen == 0) && tmp == 0)
 		{
 			return FALSE;
 		}
@@ -362,8 +355,7 @@ testunit testsuit[] = {
     {"free codebuch", test_free},
     {"code for char", test_code_for_char},
     {"char for code", test_char_for_code},
-    {"error-handling testen", test_last_char_was_error},
     {"prüfe 2 codebücher auf gleichheit", test_equals},
     {"teste alles", test_all}
 };
-int nr_of_unittests = 9;
+int nr_of_unittests = 8;

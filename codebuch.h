@@ -81,13 +81,6 @@ extern unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code,
 extern BITARRAY* codebuch_structure(CODEBUCH* p_cb);
 
 /**
- * Prueft, ob der zuletzt von codebuch_char_for_code zurückgegebene char ein Fehler war.
- * @param p_cb Das Codebuch.
- * @return TRUE, wenn der letzte zurückgegebene char ein Fehler war, sonst FALSE.
- */
-extern BOOL codebuch_last_char_was_error(CODEBUCH* p_cb);
-
-/**
  * Prueft, ob 2 Codebuecher gleich sind.
  * @param p_cb1 Das eine Codebuch.
  * @param p_cb2 Das andere Codebuch.

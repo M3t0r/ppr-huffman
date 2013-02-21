@@ -32,11 +32,6 @@ struct _CODEBUCH
 	/* Anzahlen der Vorkommen fuer jedes Zeichen */
 	unsigned int	frequencies[256];
 	
-	/* Flag, das gesetzt wird, falls beim Lesen eines Zeichens fuer einen Code
-	 * ein Fehler auftrtitt
-	 */
-	BOOL			last_char_was_error;
-	
 	/* Die Größe des größten Codes */
 	unsigned char	max_code_length;
 };
@@ -385,12 +380,13 @@ unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned 
 	}
 	
 	if ((p_code == NULL) || (bitarray_length(p_code) <= 0)) {
-		p_cb->last_char_was_error = TRUE;
+		if (p_used_bits != NULL)
+		{
+			(*p_used_bits) = 0;
+		}
 		return 0;
 	}
-	
-	p_cb->last_char_was_error = FALSE;
-	
+		
 	if (p_used_bits != NULL)
 	{
 		(*p_used_bits) = 0;
@@ -398,17 +394,14 @@ unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned 
 	
 	i = 0;
 	tmp = p_cb->baum;
-	/* < oder <= ???*/
 	while ((i < bitarray_length(p_code)) && (tmp != NULL))
 	{
 		if (frequency_is_leaf(tmp))
 		{
-			/*printf(": '%c'\n", frequency_get_zeichen(tmp));*/
 			return frequency_get_zeichen(tmp);
 		}
 		else
 		{
-			/*printf("%d", bitarray_get_bit(p_code, i));*/
 			if (bitarray_get_bit(p_code, i))
 			{
 				tmp = frequency_get_right(tmp);
@@ -428,12 +421,13 @@ unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned 
 	
 	if (frequency_is_leaf(tmp))
 	{
-		/*printf(": '%c'\n", frequency_get_zeichen(tmp));*/
 		return frequency_get_zeichen(tmp);
 	}
 	
-	/*printf(": error\n");*/
-	p_cb->last_char_was_error = TRUE;
+	if (p_used_bits != NULL)
+	{
+		(*p_used_bits) = 0;
+	}
 	return 0;
 }
 
@@ -508,23 +502,6 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 	
 	return retval;
 }
-
-
-/* ---------------------------------------------------------------------------
- * Funktion: codebuch_last_char_was_error
- * ------------------------------------------------------------------------ */
-BOOL codebuch_last_char_was_error(CODEBUCH* p_cb)
-{
-	if (p_cb != NULL)
-	{
-		return p_cb->last_char_was_error;
-	}
-	else
-	{
-		return FALSE;
-	}
-}
-
 
 /* ---------------------------------------------------------------------------
  * Funktion: codes_equal
