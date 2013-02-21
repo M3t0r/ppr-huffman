@@ -209,6 +209,7 @@ void decompress(char *in_filename, char *out_filename)
         BITARRAY *pipeline;
         unsigned int anzahl_zeichen[256];
         int i;
+		unsigned int verwendete_bits = 0;
 
 		/* Initialisiere anzahl_zeichen Vektor */
         memset(anzahl_zeichen, 0, sizeof(unsigned int) * 256);
@@ -231,14 +232,14 @@ void decompress(char *in_filename, char *out_filename)
                 
         do
         {
-            unsigned int verwendete_bits = 0;
+            /*unsigned int verwendete_bits = 0;
             BYTE zeichen = codebuch_char_for_code(p_codebuch, pipeline, &verwendete_bits);
             if ((zeichen == 0) && codebuch_last_char_was_error(p_codebuch))
             {
                 if (!bitfile_is_eof(p_input))
                 {
                     int i;
-                    BITARRAY *lese = bitfile_read_bitarray(p_input, (2 * 8) - benutzte_bits);
+                    BITARRAY *lese = bitfile_read_bitarray(p_input, (2 * 8));
 
                     bitarray_merge(pipeline, lese);
 
@@ -254,11 +255,32 @@ void decompress(char *in_filename, char *out_filename)
             }
             else
             {	
-                bitarray_remove_front(pipeline, verwendete_bits);
+				bitarray_remove_front(pipeline, verwendete_bits);
                 
                 fputc(zeichen, p_output);
-            }
-        } while (!bitfile_is_eof(p_input) || (bitarray_length(pipeline) != 0));
+            }*/
+			BYTE zeichen;
+			
+			if(bitarray_length(pipeline) < codebuch_get_max_code_length(p_codebuch)+8)
+			{
+				BITARRAY *lese = bitfile_read_bitarray(p_input, codebuch_get_max_code_length(p_codebuch)+8);
+				bitarray_merge(pipeline, lese);
+				bitarray_free(&lese);
+				
+				if(bitfile_is_eof(p_input))
+				{
+					for (i = 0; (benutzte_bits + i) < 8; i++)
+					{
+						bitarray_pop(pipeline);
+					}
+				}
+			}
+			
+			zeichen = codebuch_get_char_for_code(p_codebuch, pipeline, &verwendete_bits);
+			fputc(zeichen, p_output);
+			
+        /*} while (!bitfile_is_eof(p_input) || (bitarray_length(pipeline) != 0));*/
+		} while(verwendete_bits != 0);
     }
     
     fclose(p_output);
