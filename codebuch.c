@@ -17,10 +17,10 @@ struct _CODEBUCH
 	/* Baum der einzelnen Frequenzen */
 	FREQUENCY* 		baum;
 	
-	/* ??? */
+	/* Die Codes für jedes Zeichen, nach Zeichen sortiert */
 	void** 			codes;
 	
-	/* ??? */
+	/* Die Anzahl der vorhandenen Codes */
 	int 			codes_used;
 	
 	/* Anzahlen der Vorkommen fuer jedes Zeichen */
@@ -198,24 +198,35 @@ CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256])
 		return NULL;
 	}
 	
-	while (heap_get_size(H) > 1) 
+	if (heap_get_size(H) == 1)
 	{
-		FREQUENCY* p_freq1 		= heap_pop(H);
-		FREQUENCY* p_freq2 		= heap_pop(H);
-		unsigned int summe1 	= frequency_get_anzahl(p_freq1);
-		unsigned int summe2 	= frequency_get_anzahl(p_freq2);
-		FREQUENCY* p_new_freq 	= frequency_new_with_anzahl(0, summe1 + summe2);
-		if (frequency_get_height(p_freq1) > frequency_get_height(p_freq2))
-		{
-			frequency_set_left(p_new_freq, p_freq1);
-			frequency_set_right(p_new_freq, p_freq2);
-		}
-		else
-		{
-			frequency_set_left(p_new_freq, p_freq2);
-			frequency_set_right(p_new_freq, p_freq1);
-		}
+		FREQUENCY* p_freq 		= heap_pop(H);
+		FREQUENCY* p_new_freq 	= frequency_new_with_anzahl(0, frequency_get_anzahl(p_freq));
+		frequency_set_left(p_new_freq, p_freq);
+		frequency_set_right(p_new_freq, NULL);
 		heap_push(H, p_new_freq);
+	}
+	else
+	{
+		while (heap_get_size(H) > 1) 
+		{
+			FREQUENCY* p_freq1 		= heap_pop(H);
+			FREQUENCY* p_freq2 		= heap_pop(H);
+			unsigned int summe1 	= frequency_get_anzahl(p_freq1);
+			unsigned int summe2 	= frequency_get_anzahl(p_freq2);
+			FREQUENCY* p_new_freq 	= frequency_new_with_anzahl(0, summe1 + summe2);
+			if (frequency_get_height(p_freq1) > frequency_get_height(p_freq2))
+			{
+				frequency_set_left(p_new_freq, p_freq1);
+				frequency_set_right(p_new_freq, p_freq2);
+			}
+			else
+			{
+				frequency_set_left(p_new_freq, p_freq2);
+				frequency_set_right(p_new_freq, p_freq1);
+			}
+			heap_push(H, p_new_freq);
+		}
 	}
 	
 	retval = codebuch_new(heap_get_element(H, 0), count, frequencies);
@@ -287,7 +298,7 @@ void codebuch_free(CODEBUCH** pp_cb)
 {
 	if ((pp_cb != NULL) && (*pp_cb != NULL))
 	{
-		int i;
+		unsigned int i;
 		frequency_free(&((*pp_cb)->baum));
 		free((*pp_cb)->baum);
 		
@@ -309,7 +320,7 @@ void codebuch_free(CODEBUCH** pp_cb)
 BITARRAY* codebuch_code_for_char(CODEBUCH* p_cb, unsigned char c)
 {
 	int l = 0;
-	int r = p_cb->codes_used - 1;
+	int r = (int)(p_cb->codes_used - 1);
 	
 	if ((p_cb == NULL) || (p_cb->codes == NULL))
 	{
@@ -513,17 +524,14 @@ static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 	}
 	else if (p_cb1 == NULL)
 	{
-		/*printf("p_cb1 NULL\n");*/
 		return FALSE;
 	}
 	else if (p_cb2 == NULL)
 	{
-		/*printf("p_cb2 NULL\n");*/
 		return FALSE;
 	}
 	else if (p_cb1->codes_used != p_cb2->codes_used)
 	{
-		/*printf("codes_used unterschiedlich (%d <-> %d)\n", p_cb1->codes_used, p_cb2->codes_used);*/
 		return FALSE;
 	}
 	else
@@ -533,7 +541,6 @@ static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 		{
 			if (!code_equals(p_cb1->codes[i], p_cb2->codes[i]))
 			{
-				/*printf("code %d ist unterschiedlich\n", i);*/
 				return FALSE;
 			}
 		}
@@ -562,12 +569,10 @@ BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 	}
 	else if (!frequency_equals(p_cb1->baum, p_cb2->baum))
 	{
-		/*printf("bäume sind unterschiedlich\n");*/
 		return FALSE;
 	}
 	else if (!codes_equal(p_cb1, p_cb2))
 	{
-		/*printf("codes unterschiedlich\n");*/
 		return FALSE;
 	}
 	else

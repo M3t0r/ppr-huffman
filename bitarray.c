@@ -88,12 +88,14 @@ static void grow(BITARRAY *ba)
 /* tuts aufm linux irgendwie nicht Oo */
 static void shrink(BITARRAY *ba)
 {
+#ifndef __linux__
 	if ((ba != NULL) && (ba->length <= (ba->capacity - STEPS)))
 	{
 		ba->data = realloc(ba->data, (ba->capacity - STEPS) * sizeof(BYTE));
 		ASSERT_ALLOC(ba->data);
 		ba->capacity -= STEPS;
 	}
+#endif
 }
 
 
@@ -104,7 +106,7 @@ void bitarray_push(BITARRAY *ba, BOOL d)
 {
 	if (ba != NULL)
 	{
-		unsigned char mask = 0x01 & d;
+		unsigned char mask = (unsigned char)0x01 & d;
 		grow(ba);
 		ba->data[ba->length / 8] |= mask << (7 - (ba->length % 8));
 		ba->length++;
@@ -141,7 +143,7 @@ BOOL bitarray_pop(BITARRAY *ba)
 		unsigned char mask = 0x80;
 		BYTE byte = ba->data[(--ba->length) / 8];
 		retval = byte & (mask >> (ba->length % 8));
-		/*shrink(ba);*/
+		shrink(ba);
 	}
 	
 	return ((retval == 0) ? FALSE : TRUE);
@@ -164,7 +166,7 @@ unsigned int bitarray_length(BITARRAY *ba)
 /* ---------------------------------------------------------------------------
  * Funktion: bitarray_get_bit
  * ------------------------------------------------------------------------ */
-BOOL bitarray_get_bit(BITARRAY *ba, int index)
+BOOL bitarray_get_bit(BITARRAY *ba, unsigned int index)
 {
 	BOOL retval = 0;
 	
@@ -182,7 +184,7 @@ BOOL bitarray_get_bit(BITARRAY *ba, int index)
 /* ---------------------------------------------------------------------------
  * Funktion: bitarray_get_byte
  * ------------------------------------------------------------------------ */
-BYTE bitarray_get_byte(BITARRAY *ba, int index)
+BYTE bitarray_get_byte(BITARRAY *ba, unsigned int index)
 {
 	BYTE retval = 0;
 	if ((ba != NULL) && (index + 8 <= ba->length))
@@ -204,7 +206,7 @@ void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2)
 {
 	if ((ba1 != NULL) && (ba2 != NULL))
 	{
-		int i;
+		unsigned int i;
 		for(i = 0; i < bitarray_length(ba2); i++)
 		{
 			bitarray_push(ba1, bitarray_get_bit(ba2, i));
@@ -216,12 +218,12 @@ void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2)
 /* ---------------------------------------------------------------------------
  * Funktion: bitarray_remove_front
  * ------------------------------------------------------------------------ */
-void bitarray_remove_front(BITARRAY *ba, int length)
+void bitarray_remove_front(BITARRAY *ba, unsigned int length)
 {
 	if ((ba != NULL) && (length <= ba->length))
 	{
 		BITARRAY *tmp = bitarray_new();
-		int i;
+		unsigned int i;
 		
 		for (i = length; i < ba->length; i++)
 		{
@@ -259,10 +261,10 @@ BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 	}
 	else
 	{
-	    int i;
-	    for(i = 0; i < ba1->length; i++)
+	    unsigned int i;
+	    for (i = 0; i < ba1->length; i++)
 	    {
-	        if(bitarray_get_bit(ba1, i) != bitarray_get_bit(ba2, i))
+	        if (bitarray_get_bit(ba1, i) != bitarray_get_bit(ba2, i))
 	        {
 	            return FALSE;
 	        }
@@ -277,12 +279,17 @@ BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
  * ------------------------------------------------------------------------ */
 void bitarray_print_adv(BITARRAY *ba, FILE *stream, BOOL print_prefix)
 {
-    int i;
-    if(print_prefix)
-        fprintf(stream, "0b");
+    unsigned int i;
     
-    for(i = 0; i < bitarray_length(ba); i++)
-        fprintf(stream, bitarray_get_bit(ba, i)?"1":"0");
+    if (print_prefix)
+    {
+        fprintf(stream, "0b");
+    }
+    
+    for (i = 0; i < bitarray_length(ba); i++)
+    {
+        fprintf(stream, bitarray_get_bit(ba, i) ? "1" : "0");
+    }
 }
 
 

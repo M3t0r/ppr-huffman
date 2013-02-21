@@ -74,12 +74,15 @@ static void bitfile_fill_buffer(BITFILE *fd)
     int character = fgetc(fd->fd);
     
     fd->buffer_index = 0;
-    fd->buffer = character;
     
-    if(character == EOF)
+    if (character == EOF)
     {
         fd->eof = TRUE;
         fd->buffer = 0;
+    }
+    else
+    {
+    	fd->buffer = (BYTE)character;
     }
 }
 
@@ -210,14 +213,14 @@ void bitfile_write_byte(BITFILE *fd, BYTE byte)
  * ------------------------------------------------------------------------ */
 void bitfile_write_bitarray(BITFILE *fd, BITARRAY *ba)
 {
-    int i;
-    if(!fd->write_mode)
+    unsigned int i;
+    if (!fd->write_mode)
     {
         fprintf(stderr, "Datei im lese Modus geöffnet, kann nicht schreiben.\n");
         exit(EXIT_FAILURE);
     }
     
-    for(i = 0; i < bitarray_length(ba); i++)
+    for (i = 0; i < bitarray_length(ba); i++)
     {
         bitfile_write_bit(fd, bitarray_get_bit(ba, i));
     }

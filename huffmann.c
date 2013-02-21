@@ -74,7 +74,7 @@ void compress(char *in_filename, char *out_filename)
         unsigned int benutzte_bits;
         BITARRAY *codebuch;
         BYTE erste_byte;
-        int i;
+        unsigned int i;
         
 		/* Eingabedatei schliessen & oeffnen, damit die Datei erneut von
 		 * vorne gelesen werden kann
@@ -114,9 +114,9 @@ void compress(char *in_filename, char *out_filename)
 		/* Byteweise lesen, Byte komprimieren und wegschreiben */
         do
         {
-            code = codebuch_code_for_char(p_codebuch, byte);
+            code = codebuch_code_for_char(p_codebuch, (BYTE)byte);
 			
-            if(code == NULL)
+            if (code == NULL)
             {
                 fprintf(stderr, "Es ist ein Fehler aufgetreten.\n");
                 exit(EXIT_FAILURE);
@@ -128,6 +128,7 @@ void compress(char *in_filename, char *out_filename)
             
             byte = fgetc(p_input);
         } while (byte != EOF);
+        
         bitfile_flush_write(p_output);
 		
 		/* Fuege am Anfang der Datei ein, wie viele Bits des letzten Bytes
@@ -136,7 +137,7 @@ void compress(char *in_filename, char *out_filename)
         bitfile_seek(p_output, 0, SEEK_SET);
         erste_byte = benutzte_bits;
         
-        for(i = 0; i < 5; i++)
+        for (i = 0; i < 5; i++)
         {
             erste_byte = (erste_byte << 1) | bitarray_get_bit(codebuch, i);
         }
@@ -153,7 +154,7 @@ void compress(char *in_filename, char *out_filename)
     DPRINT("Ausgabedatei wurde geschlossen!\n");
     
     fclose(p_input);
-    DPRINT("Eingabedatei wurde geschlossen\n");
+    DPRINT("Eingabedatei wurde geschlossen!\n");
 }
 
 
@@ -166,7 +167,7 @@ void decompress(char *in_filename, char *out_filename)
     FILE* p_output;
     int benutzte_bits;
     
-    if(in_filename == NULL || out_filename == NULL) {
+    if ((in_filename == NULL) || (out_filename == NULL)) {
         fprintf(stderr, "Kann nicht dekomprimieren, da Ein- oder Ausgabedatei "
                 "nicht angegeben wurde!\n");
         exit(EXIT_FAILURE);
@@ -174,7 +175,7 @@ void decompress(char *in_filename, char *out_filename)
     
     /* Eingabedatei oeffnen */
     p_input = bitfile_open(in_filename, FALSE);
-    if(p_input == NULL)
+    if (p_input == NULL)
     { 
         fprintf(stderr, "Fehler beim Öffnen der Eingabedatei.\n"
                 "Stimmt der Pfad: '%s'?\n", in_filename);
@@ -184,7 +185,7 @@ void decompress(char *in_filename, char *out_filename)
     
     /* Ausgabedatei oeffnen */
     p_output = fopen(out_filename, "wb");
-    if(p_output == NULL)
+    if (p_output == NULL)
     { 
         fprintf(stderr, "Fehler beim Öffnen der Ausgabedatei.\n"
                 "Stimmt der Pfad: '%s'?\n", out_filename);
@@ -194,11 +195,11 @@ void decompress(char *in_filename, char *out_filename)
     
     /* Wie viele Bits des letzten Bytes enthalten Nutzdaten */
     benutzte_bits = bitfile_read_bit(p_input) << 2 | bitfile_read_bit(p_input) << 1 | bitfile_read_bit(p_input);
-    if(bitfile_last_read_was_error(p_input))
+    if (bitfile_last_read_was_error(p_input))
     {
         perror("Fehler beim einlesen");
     }
-    else if(bitfile_is_eof(p_input))
+    else if (bitfile_is_eof(p_input))
     {
         DPRINT("Eingabedatei war leer, es wird nichts dekomprimiert.");
     }
@@ -213,12 +214,12 @@ void decompress(char *in_filename, char *out_filename)
         memset(anzahl_zeichen, 0, sizeof(unsigned int) * 256);
         
         /* Haeufigkeit der einzelnen Zeichen einlesen */
-        for(i = 0; i < 256; i++)
+        for (i = 0; i < 256; i++)
         {
             int anzahl_byte = bitfile_read_bit(p_input) << 2 
 			                 | bitfile_read_bit(p_input) << 1 
 							 | bitfile_read_bit(p_input);
-            for(; anzahl_byte > 0; anzahl_byte--)
+            for (; anzahl_byte > 0; anzahl_byte--)
             {
                 anzahl_zeichen[i] = (anzahl_zeichen[i] << 8) | bitfile_read_byte(p_input);
             }            
@@ -237,7 +238,7 @@ void decompress(char *in_filename, char *out_filename)
                 if (!bitfile_is_eof(p_input))
                 {
                     int i;
-                    BITARRAY *lese = bitfile_read_bitarray(p_input, 8);
+                    BITARRAY *lese = bitfile_read_bitarray(p_input, (2 * 8) - benutzte_bits);
 
                     bitarray_merge(pipeline, lese);
 

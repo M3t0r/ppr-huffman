@@ -83,7 +83,7 @@ unsigned int bitarray_length(BITARRAY *ba);
  * @param index Gibt an, das wie vielte Bit gelesen werden soll.
  * @return Das gelesene Bit. TRUE entspricht 1, FALSE ist 0.
  */
-BOOL bitarray_get_bit(BITARRAY *ba, int index);
+BOOL bitarray_get_bit(BITARRAY *ba, unsigned int index);
 
 /**
  * Liefert ausgehend vom Index das naechste Byte aus dem Bitarray.
@@ -91,7 +91,7 @@ BOOL bitarray_get_bit(BITARRAY *ba, int index);
  * @param index Position, des ersten zu lesenden Bits.
  * @return Das gelesene Byte.
  */
-BYTE bitarray_get_byte(BITARRAY *ba, int index);
+BYTE bitarray_get_byte(BITARRAY *ba, unsigned int index);
 
 /**
  * Fuegt zwei Bitarrays zusammen. ba2 wird dabei hinter ba1
@@ -107,7 +107,7 @@ void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2);
  * @param ba Bitarray, dessen vorder Teil entfernt werden soll.
  * @param length Anzahl der zu entfernenden Bits.
  */
-void bitarray_remove_front(BITARRAY *ba, int length);
+void bitarray_remove_front(BITARRAY *ba, unsigned int length);
 
 /**
  * Gibt den Inhalt des Bitarrays als Bitfolge in einer Datei aus.
