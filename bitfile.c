@@ -12,13 +12,13 @@
 /**
  * Liest das naechste Byte der Datei ein und schreibt dieses zur weiteren
  * Verarbeitung in den Buffer.
- * @BITFILE fd BITFILE, dessen Buffer gefuellt werden soll.
+ * @param fd BITFILE, dessen Buffer gefuellt werden soll.
  */
 static void bitfile_fill_buffer(BITFILE *fd);
 
 /**
  * Schreibt den aktuellen Inhalt des Buffer in die Datei.
- * @BITFILE fd BITFILE, dessen Buffer geschrieben werden soll.
+ * @param fd BITFILE, dessen Buffer geschrieben werden soll.
  */
 static void bitfile_write_buffer_to_file(BITFILE *fd);
 

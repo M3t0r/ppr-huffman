@@ -50,7 +50,7 @@ extern FREQUENCY* frequency_new_with_anzahl(unsigned char new_zeichen, unsigned 
 
 /**
  * Gibt die Frequenz frei.
- * @param f Ein Zeiger auf die freizugebende Frequenz.
+ * @param pp_freq Ein Zeiger auf die freizugebende Frequenz.
  */
 extern void frequency_free(FREQUENCY** pp_freq);
 
@@ -106,10 +106,10 @@ extern BOOL frequency_is_leaf(FREQUENCY* p_freq);
 /**
  * Vergleicht zwei Frequenzen anhand ihrer Häufigkeiten.
  * @param p_freq1 Die eine Frequenz.
- * @param p_frep2 Die andere Frequenz.
+ * @param p_freq2 Die andere Frequenz.
  * @return 1 wenn p_freq1 > p_freq2, 0 wenn beide Frequenzen gleich sind, -1 wenn p_freq1 < p_freq2.
  */
-extern int cmp_frequency_haeufigkeiten(FREQUENCY* p_frep1, FREQUENCY* p_frep2);
+extern int cmp_frequency_haeufigkeiten(FREQUENCY* p_freq1, FREQUENCY* p_freq2);
 
 /**
  * Gibt die Höhe des Frequenz-Baums zurück.
@@ -128,8 +128,8 @@ extern void frequency_print(FREQUENCY* p_freq, int depth, int index);
 
 /**
  * Prüft, ob 2 Frequenzen gleich sind.
- * @param p_frep1 Die eine Frequenz.
- * @param p_frep2 Die andere Frequenz.
+ * @param p_freq1 Die eine Frequenz.
+ * @param p_freq2 Die andere Frequenz.
  * @return TRUE, falls p_frep1 und p_frep2 gleich sind, FALSE sonst.
  */
 extern BOOL frequency_equals(FREQUENCY* p_freq1, FREQUENCY* p_freq2);

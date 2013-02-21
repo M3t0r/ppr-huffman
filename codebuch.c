@@ -12,6 +12,7 @@
 /*****************************************************************************
  * Strukturdefinitionen
  *****************************************************************************/
+
 struct _CODEBUCH 
 {
 	/* Baum der einzelnen Frequenzen */
@@ -21,7 +22,7 @@ struct _CODEBUCH
 	void** 			codes;
 	
 	/* Die Anzahl der vorhandenen Codes */
-	int 			codes_used;
+	unsigned int 	codes_used;
 	
 	/* Anzahlen der Vorkommen fuer jedes Zeichen */
 	unsigned int	frequencies[256];

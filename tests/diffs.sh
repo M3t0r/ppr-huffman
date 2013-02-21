@@ -18,8 +18,6 @@ tests="1_zeichen.txt blz.csv donau.txt kartoffelpuffer.txt PPR_V01.pdf franz.txt
 
 i=1
 for fall in $tests; do
-	echo
-	#start_time=`date +%s`
 	#echo "Testfall ${i}: ${fall}"
 	../ppr-huffman -c ${fall}
 	../ppr-huffman -d ${fall}".hc"
@@ -34,14 +32,8 @@ for fall in $tests; do
     else
     	echo -e "${GREEN}PASSED:${NORMAL} ${fall}"
     fi;
-    #echo "Took $(expr `date +%s` - $start_time)s"
+    rm ${fall}".hc" ${fall}".hc.hd"
     ((i++))
 done;
-
-rm *.hc*
-
-cd ../
-make clean
-cd tests
 
 exit $errors

@@ -104,7 +104,7 @@ void bitfile_write_byte(BITFILE *fd, BYTE d);
 /**
  * Schreibt die uebergebene Anzahl Bits in das Bitfile.
  * @param fd Bitfile, in das geschrieben werden soll.
- * @param d Zu schreibendes Bitarray.
+ * @param ba Zu schreibendes Bitarray.
  */
 void bitfile_write_bitarray(BITFILE *fd, BITARRAY *ba);
 
