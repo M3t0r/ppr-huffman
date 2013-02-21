@@ -28,7 +28,7 @@ all: clean splint $(DOXYGEN_FILE) $(OUTPUT)
 
 splint:
 	@echo "Prüfe Dateien mit splint"
-	@splint $(SFLAGS) $(SRC) $(SRC:.c=.h) | tee $(SPLINT_LOG)
+	@splint $(SFLAGS) $(SRC) $(filter-out main.h,$(SRC:.c=.h)) | tee $(SPLINT_LOG)
 	
 doxygen : $(DOXYGEN_FILE)
 
@@ -68,6 +68,7 @@ clean:
 	-@rm -rf $(OUTPUT) $(BUILDDIR)
 	-@rm -rf tests/codebuch tests/frequency tests/heap tests/test tests/code tests/bitarray tests/bitfile tests/*.dSYM tests/bitfile_write.txt
 	-@rm -rf $(DOXYGEN_PATH)
+	-@rm $(SPLINT_LOG)
 	-@echo "clean!"
 	
 debug: clean
