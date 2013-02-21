@@ -376,6 +376,10 @@ unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned 
 	
 	if ((p_cb == NULL) || (p_cb->codes == NULL) || (p_cb->codes_used <= 0))
 	{
+		if (p_used_bits != NULL)
+		{
+			(*p_used_bits) = 0;
+		}
 		return 0;
 	}
 	
@@ -503,6 +507,7 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 	return retval;
 }
 
+
 /* ---------------------------------------------------------------------------
  * Funktion: codes_equal
  * ------------------------------------------------------------------------ */
@@ -584,6 +589,10 @@ FREQUENCY* codebuch_get_baum(CODEBUCH* p_cb)
 	return p_cb->baum;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_get_max_code_length
+ * ------------------------------------------------------------------------ */
 unsigned char codebuch_get_max_code_length(CODEBUCH* p_cb)
 {
 	if (p_cb == NULL)

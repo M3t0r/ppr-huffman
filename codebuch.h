@@ -84,7 +84,7 @@ extern BITARRAY* codebuch_structure(CODEBUCH* p_cb);
  * Prueft, ob 2 Codebuecher gleich sind.
  * @param p_cb1 Das eine Codebuch.
  * @param p_cb2 Das andere Codebuch.
- * @return BOOL TRUE, falls cb1 und cb2 gleich sind, FALSE sonst.
+ * @return TRUE, falls cb1 und cb2 gleich sind, FALSE sonst.
  */
 extern BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2);
 
@@ -95,6 +95,11 @@ extern BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2);
  */
 extern FREQUENCY* codebuch_get_baum(CODEBUCH* p_cb);
 
+/**
+ * Gibt die Länge des längsten Codes im Codebuch zurück.
+ * @param p_cb Das Codebuch.
+ * @return Die Länge des längsten Codes im Codebuch.
+ */
 extern unsigned char codebuch_get_max_code_length(CODEBUCH* p_cb);
 
 #endif
