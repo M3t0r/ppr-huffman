@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "testmain.h"
 
-#if defined __APPLE__ || defined __linux__ || define __CYGWIN__
+#if defined __APPLE__ || defined __linux__ || defined __CYGWIN__
 #define NORMAL	"\033[0m"
 #define GREEN	"\033[0;32m"
 #define RED		"\033[0;31m"
