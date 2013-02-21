@@ -26,6 +26,9 @@ static void bitfile_write_buffer_to_file(BITFILE *fd);
 /*****************************************************************************
  * Funktionsdefinitionen
  *****************************************************************************/
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_open
+ * ------------------------------------------------------------------------ */
 BITFILE *bitfile_open(char* path, BOOL w)
 {
     BITFILE *fd = malloc(sizeof(BITFILE));
@@ -46,6 +49,10 @@ BITFILE *bitfile_open(char* path, BOOL w)
     return fd;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_close
+ * ------------------------------------------------------------------------ */
 void bitfile_close(BITFILE **fd)
 {
     if((*fd)->write_mode && (*fd)->buffer_index != 0)
@@ -58,6 +65,10 @@ void bitfile_close(BITFILE **fd)
     *fd = NULL;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_fill_buffer
+ * ------------------------------------------------------------------------ */
 static void bitfile_fill_buffer(BITFILE *fd)
 {
     int character = fgetc(fd->fd);
@@ -72,6 +83,10 @@ static void bitfile_fill_buffer(BITFILE *fd)
     }
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_read_bit
+ * ------------------------------------------------------------------------ */
 BOOL bitfile_read_bit(BITFILE *fd)
 {
     BOOL bit;
@@ -94,6 +109,10 @@ BOOL bitfile_read_bit(BITFILE *fd)
     return bit;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_read_byte
+ * ------------------------------------------------------------------------ */
 BYTE bitfile_read_byte(BITFILE *fd)
 {
 	BYTE retval = 0;
@@ -105,6 +124,10 @@ BYTE bitfile_read_byte(BITFILE *fd)
 	return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_read_bitarray
+ * ------------------------------------------------------------------------ */
 BITARRAY *bitfile_read_bitarray(BITFILE *fd, int length)
 {
     BITARRAY *ba = bitarray_new();
@@ -122,6 +145,10 @@ BITARRAY *bitfile_read_bitarray(BITFILE *fd, int length)
     return ba;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_write_buffer_to_file
+ * ------------------------------------------------------------------------ */
 static void bitfile_write_buffer_to_file(BITFILE *fd)
 {
     int wv = fputc(fd->buffer, fd->fd);
@@ -136,6 +163,10 @@ static void bitfile_write_buffer_to_file(BITFILE *fd)
     fd->buffer_index = 0;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_write_bit
+ * ------------------------------------------------------------------------ */
 void bitfile_write_bit(BITFILE *fd, BOOL bit)
 {
     if(!fd->write_mode)
@@ -153,6 +184,10 @@ void bitfile_write_bit(BITFILE *fd, BOOL bit)
     }
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_write_byte
+ * ------------------------------------------------------------------------ */
 void bitfile_write_byte(BITFILE *fd, BYTE byte)
 {
     int i;
@@ -169,6 +204,10 @@ void bitfile_write_byte(BITFILE *fd, BYTE byte)
     }
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_write_bitarray
+ * ------------------------------------------------------------------------ */
 void bitfile_write_bitarray(BITFILE *fd, BITARRAY *ba)
 {
     int i;
@@ -184,11 +223,19 @@ void bitfile_write_bitarray(BITFILE *fd, BITARRAY *ba)
     }
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_is_eof
+ * ------------------------------------------------------------------------ */
 BOOL bitfile_is_eof(BITFILE *fd)
 {
     return fd->eof;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_seek
+ * ------------------------------------------------------------------------ */
 int bitfile_seek(BITFILE *fd, long int offset, int origin)
 {
     if(fd->write_mode)
@@ -204,6 +251,10 @@ int bitfile_seek(BITFILE *fd, long int offset, int origin)
     return fseek(fd->fd, offset, origin);
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_flush_write
+ * ------------------------------------------------------------------------ */
 void bitfile_flush_write(BITFILE *fd)
 {
     BYTE buffer;
@@ -219,6 +270,10 @@ void bitfile_flush_write(BITFILE *fd)
     bitfile_seek(fd, -1, SEEK_CUR);
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitfile_last_read_was_error
+ * ------------------------------------------------------------------------ */
 BOOL bitfile_last_read_was_error(BITFILE *fd)
 {
     return ferror(fd->fd);

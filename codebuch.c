@@ -1,4 +1,3 @@
-
 /*****************************************************************************
  * Includes
  *****************************************************************************/
@@ -15,10 +14,21 @@
  *****************************************************************************/
 struct _CODEBUCH 
 {
+	/* Baum der einzelnen Frequenzen */
 	FREQUENCY* 		baum;
+	
+	/* ??? */
 	void** 			codes;
+	
+	/* ??? */
 	int 			codes_used;
+	
+	/* Anzahlen der Vorkommen fuer jedes Zeichen */
 	unsigned int	frequencies[256];
+	
+	/* Flag, das gesetzt wird, falls beim Lesen eines Zeichens fuer einen Code
+	 * ein Fehler auftrtitt
+	 */
 	BOOL			last_char_was_error;
 };
 
@@ -28,34 +38,34 @@ struct _CODEBUCH
  * Funktionsprototypen
  *****************************************************************************/
 /**
- * Fügt einen neuen Code dem Codebuch hinzu.
- * @param p_cb CODEBUCH* Das Codebuch.
- * @param p_code CODE* Der Code.
+ * Fuegt einen neuen Code dem Codebuch hinzu.
+ * @param p_cb Das Codebuch.
+ * @param p_code Der hinzuzufuegende Code.
  */
 static void add_code(CODEBUCH* p_cb, CODE* p_code);
 
 /**
  * Baut das Codebuch rekursiv aus einem Frequenz-Baum auf.
- * @param p_freq FREQUENCY* Der aktuelle Wurzelknoten.
- * @param p_prev_path BITARRAY* Der bisherige Pfad.
- * @param p_cb CODEBUCH* Das Codebuch.
+ * @param p_freq Der aktuelle Wurzelknoten.
+ * @param p_prev_path Der bisherige Pfad.
+ * @param p_cb Das Codebuch.
  */
 static void build_codebuch(FREQUENCY* p_freq, BITARRAY* p_prev_path, CODEBUCH* p_cb);
 
 /**
- * Erzeugt ein Grundgerüst für ein neues Codebuch.
- * @param p_baum FREQUENCY* Der Codebaum.
- * @param num_codes int Die Anzahl der Codes. (Anzahl der verschiedenen vorhandenen Zeichen)
- * @param freqs unsigned int[256] Die Anzahlen aller Zeichen.
- * @return CODEBUCH* Das Grundgerüst des neuen Codebuchs.
+ * Erzeugt ein Grundgeruest für ein neues Codebuch.
+ * @param p_baum Der Codebaum.
+ * @param num_codes Die Anzahl der Codes. (Anzahl der verschiedenen vorhandenen Zeichen)
+ * @param freqs Die Anzahlen aller Zeichen.
+ * @return Das Grundgeruest des neuen Codebuchs.
  */
 static CODEBUCH* codebuch_new(FREQUENCY* p_baum, int num_codes, unsigned int freqs[256]);
 
 /**
- * Überprüft die Codes von 2 Codebüchern auf Gleichheit.
- * @param p_cb1 CODEBUCH* Das eine Codebuch.
- * @param p_cb2 CODEBUCH* Das andere Codebuch.
- * @return BOOL TRUE falls die Codes beider Codebücher gleich sind, FALSE sonst.
+ * Ueberprueft die Codes von zwei Codebuechern auf Gleichheit.
+ * @param p_cb1 Das eine Codebuch.
+ * @param p_cb2 Das andere Codebuch.
+ * @return TRUE falls die Codes beider Codebuecher gleich sind, FALSE sonst.
  */
 static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2);
 
@@ -63,6 +73,9 @@ static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2);
 /*****************************************************************************
  * Funktionsdefinitionen
  *****************************************************************************/
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_new
+ * ------------------------------------------------------------------------ */
 static CODEBUCH* codebuch_new(FREQUENCY* p_baum, int num_codes, unsigned int freqs[256])
 {
 	int i;
@@ -83,6 +96,10 @@ static CODEBUCH* codebuch_new(FREQUENCY* p_baum, int num_codes, unsigned int fre
     return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: add_code
+ * ------------------------------------------------------------------------ */
 static void add_code(CODEBUCH* p_cb, CODE* p_code) 
 {	
     if ((p_cb != NULL) && (p_cb->codes != NULL) && (p_code != NULL)) 
@@ -106,6 +123,10 @@ static void add_code(CODEBUCH* p_cb, CODE* p_code)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: build_codebuch
+ * ------------------------------------------------------------------------ */
 static void build_codebuch(FREQUENCY* p_freq, BITARRAY* p_prev_path, CODEBUCH* p_cb)
 {
 	unsigned int len = bitarray_length(p_prev_path);
@@ -151,6 +172,10 @@ static void build_codebuch(FREQUENCY* p_freq, BITARRAY* p_prev_path, CODEBUCH* p
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_new_from_frequency
+ * ------------------------------------------------------------------------ */
 CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256])
 {
 	int i;
@@ -199,6 +224,10 @@ CODEBUCH* codebuch_new_from_frequency(unsigned int frequencies[256])
 	return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_new_from_structure
+ * ------------------------------------------------------------------------ */
 CODEBUCH* codebuch_new_from_structure(BITARRAY* p_ba)
 {
 	unsigned int frequencies[256];
@@ -250,6 +279,10 @@ CODEBUCH* codebuch_new_from_structure(BITARRAY* p_ba)
 	return codebuch_new_from_frequency(frequencies);
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_free
+ * ------------------------------------------------------------------------ */
 void codebuch_free(CODEBUCH** pp_cb)
 {
 	if ((pp_cb != NULL) && (*pp_cb != NULL))
@@ -269,6 +302,10 @@ void codebuch_free(CODEBUCH** pp_cb)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_code_for_char
+ * ------------------------------------------------------------------------ */
 BITARRAY* codebuch_code_for_char(CODEBUCH* p_cb, unsigned char c)
 {
 	int l = 0;
@@ -309,6 +346,10 @@ BITARRAY* codebuch_code_for_char(CODEBUCH* p_cb, unsigned char c)
 	return NULL;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_char_for_code
+ * ------------------------------------------------------------------------ */
 unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned int* p_used_bits)
 {
 	FREQUENCY* tmp;
@@ -372,6 +413,10 @@ unsigned char codebuch_char_for_code(CODEBUCH* p_cb, BITARRAY* p_code, unsigned 
 	return 0;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_structure
+ * ------------------------------------------------------------------------ */
 BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 {
 	BITARRAY* retval;
@@ -440,6 +485,10 @@ BITARRAY* codebuch_structure(CODEBUCH* p_cb)
 	return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_last_char_was_error
+ * ------------------------------------------------------------------------ */
 BOOL codebuch_last_char_was_error(CODEBUCH* p_cb)
 {
 	if (p_cb != NULL)
@@ -452,6 +501,10 @@ BOOL codebuch_last_char_was_error(CODEBUCH* p_cb)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codes_equal
+ * ------------------------------------------------------------------------ */
 static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 {
 	if ((p_cb1 == NULL) && (p_cb2 == NULL))
@@ -489,6 +542,10 @@ static BOOL codes_equal(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 	return TRUE;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_equals
+ * ------------------------------------------------------------------------ */
 BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 {
 	if ((p_cb1 == NULL) && (p_cb2 == NULL))
@@ -519,6 +576,10 @@ BOOL codebuch_equals(CODEBUCH* p_cb1, CODEBUCH* p_cb2)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: codebuch_get_baum
+ * ------------------------------------------------------------------------ */
 FREQUENCY* codebuch_get_baum(CODEBUCH* p_cb)
 {
 	if (p_cb == NULL)

@@ -1,30 +1,46 @@
+/*****************************************************************************
+ * Includes
+ *****************************************************************************/
 #include "bitarray.h"
 #include <string.h>
 
-#define STEPS (4*8)
 
-static void grow(BITARRAY *ba)
-{
-	if ((ba != NULL) && (ba->length >= ba->capacity))
-	{
-		ba->data = realloc(ba->data, (ba->capacity + STEPS) * sizeof(BYTE));
-		ASSERT_ALLOC(ba->data);
-		memset(ba->data + (ba->capacity / 8), 0, STEPS);
-		ba->capacity += STEPS;
-	}
-}
+/*****************************************************************************
+ * Definitionen von Konstanten
+ *****************************************************************************/
+/**
+ * Schrittweite mit der Bitarray vergroessert bzw. verkleinert werden. Die
+ * Angabe erfolgt in Bits.
+ */
+ #define STEPS (4*8)
 
-/* tuts aufm linux irgendwie nicht Oo */
-static void shrink(BITARRAY *ba)
-{
-	if ((ba != NULL) && (ba->length <= (ba->capacity - STEPS)))
-	{
-		ba->data = realloc(ba->data, (ba->capacity - STEPS) * sizeof(BYTE));
-		ASSERT_ALLOC(ba->data);
-		ba->capacity -= STEPS;
-	}
-}
 
+/*****************************************************************************
+ * Funktionsprototypen
+ *****************************************************************************/
+ /**
+  * Prueft, ob das Bitarray noch gross genug ist, um ein weiteres Bit 
+  * aufzunehmen. Falls dies nicht der Falls ist, wird das Bitarray um STEPS
+  * vergroessert.
+  * @param ba Zu vergroesserndes Bitarray.
+  */
+ static void grow(BITARRAY *ba);
+ 
+ 
+ /**
+  * Prueft, ob das Bitarray verkleinert werden kann. Falls dies der Fall ist, 
+  * wird das Bitarray um STEPS verkleinert.
+  * @param ba Zu verkleinerndes Bitarray.
+  */
+ static void shrink(BITARRAY *ba);
+ 
+ 
+ /*****************************************************************************
+ * Funktionsdefinitionen
+ *****************************************************************************/
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_new
+ * ------------------------------------------------------------------------ */
 BITARRAY *bitarray_new()
 {
 	BITARRAY* retval 	= malloc(sizeof(BITARRAY));
@@ -36,6 +52,10 @@ BITARRAY *bitarray_new()
 	return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_free
+ * ------------------------------------------------------------------------ */
 void bitarray_free(BITARRAY **ba)
 {
 	if ((ba != NULL) && (*ba != NULL))
@@ -46,6 +66,40 @@ void bitarray_free(BITARRAY **ba)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: grow
+ * ------------------------------------------------------------------------ */
+static void grow(BITARRAY *ba)
+{
+	if ((ba != NULL) && (ba->length >= ba->capacity))
+	{
+		ba->data = realloc(ba->data, (ba->capacity + STEPS) * sizeof(BYTE));
+		ASSERT_ALLOC(ba->data);
+		memset(ba->data + (ba->capacity / 8), 0, STEPS);
+		ba->capacity += STEPS;
+	}
+}
+
+
+/* ---------------------------------------------------------------------------
+ * Funktion: shrink
+ * ------------------------------------------------------------------------ */
+/* tuts aufm linux irgendwie nicht Oo */
+static void shrink(BITARRAY *ba)
+{
+	if ((ba != NULL) && (ba->length <= (ba->capacity - STEPS)))
+	{
+		ba->data = realloc(ba->data, (ba->capacity - STEPS) * sizeof(BYTE));
+		ASSERT_ALLOC(ba->data);
+		ba->capacity -= STEPS;
+	}
+}
+
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_push
+ * ------------------------------------------------------------------------ */
 void bitarray_push(BITARRAY *ba, BOOL d)
 {
 	if (ba != NULL)
@@ -57,6 +111,10 @@ void bitarray_push(BITARRAY *ba, BOOL d)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_push_byte
+ * ------------------------------------------------------------------------ */
 void bitarray_push_byte(BITARRAY* ba, BYTE d)
 {
 	if (ba != NULL)
@@ -70,6 +128,10 @@ void bitarray_push_byte(BITARRAY* ba, BYTE d)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_pop
+ * ------------------------------------------------------------------------ */
 BOOL bitarray_pop(BITARRAY *ba)
 {
 	BOOL retval = 0;
@@ -85,6 +147,10 @@ BOOL bitarray_pop(BITARRAY *ba)
 	return ((retval == 0) ? FALSE : TRUE);
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_length
+ * ------------------------------------------------------------------------ */
 unsigned int bitarray_length(BITARRAY *ba)
 {
 	if (ba != NULL)
@@ -94,6 +160,10 @@ unsigned int bitarray_length(BITARRAY *ba)
 	return 0;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_get_bit
+ * ------------------------------------------------------------------------ */
 BOOL bitarray_get_bit(BITARRAY *ba, int index)
 {
 	BOOL retval = 0;
@@ -108,6 +178,10 @@ BOOL bitarray_get_bit(BITARRAY *ba, int index)
 	return ((retval == 0) ? FALSE : TRUE);
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_get_byte
+ * ------------------------------------------------------------------------ */
 BYTE bitarray_get_byte(BITARRAY *ba, int index)
 {
 	BYTE retval = 0;
@@ -122,6 +196,10 @@ BYTE bitarray_get_byte(BITARRAY *ba, int index)
 	return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_merge
+ * ------------------------------------------------------------------------ */
 void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2)
 {
 	if ((ba1 != NULL) && (ba2 != NULL))
@@ -134,6 +212,10 @@ void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2)
     }
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_remove_front
+ * ------------------------------------------------------------------------ */
 void bitarray_remove_front(BITARRAY *ba, int length)
 {
 	if ((ba != NULL) && (length <= ba->length))
@@ -153,6 +235,10 @@ void bitarray_remove_front(BITARRAY *ba, int length)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_equals
+ * ------------------------------------------------------------------------ */
 BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 {
 	if (ba1 == NULL && ba2 == NULL)
@@ -185,6 +271,10 @@ BOOL bitarray_equals(BITARRAY *ba1, BITARRAY *ba2)
 	return TRUE;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_print_adv
+ * ------------------------------------------------------------------------ */
 void bitarray_print_adv(BITARRAY *ba, FILE *stream, BOOL print_prefix)
 {
     int i;
@@ -195,6 +285,10 @@ void bitarray_print_adv(BITARRAY *ba, FILE *stream, BOOL print_prefix)
         fprintf(stream, bitarray_get_bit(ba, i)?"1":"0");
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: bitarray_print
+ * ------------------------------------------------------------------------ */
 void bitarray_print(BITARRAY *ba)
 {
     bitarray_print_adv(ba, stdout, TRUE);

@@ -1,15 +1,40 @@
+/*****************************************************************************
+ * Includes
+ *****************************************************************************/
 #include "frequency.h"
 
+
+/*****************************************************************************
+ * Makrodefinition
+ *****************************************************************************/
 #define MAX(a, b) (((a) >= (b)) ? (a) : (b))
 
+
+/*****************************************************************************
+ * Strukturdefintionen
+ *****************************************************************************/
 struct _FREQUENCY 
 {
+    /* Zeichen der Frequenz */
 	unsigned char 		zeichen;
+	
+	/* Anzahl der Vorkommen des Zeichens */
 	unsigned int 		anzahl;
+	
+	/* Linker Teilbaum */
 	struct _FREQUENCY* 	left;
+	
+	/* Rechter Teilbaum */
 	struct _FREQUENCY* 	right;
 };
 
+
+/*****************************************************************************
+ * Funktionsdefinitionen
+ *****************************************************************************/
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_new_with_anzahl
+ * ------------------------------------------------------------------------ */
 FREQUENCY* frequency_new_with_anzahl(unsigned char new_zeichen, unsigned int new_anzahl)
 {
 	FREQUENCY* retval 	= (FREQUENCY*)malloc(sizeof(FREQUENCY));
@@ -21,6 +46,10 @@ FREQUENCY* frequency_new_with_anzahl(unsigned char new_zeichen, unsigned int new
 	return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_free
+ * ------------------------------------------------------------------------ */
 void frequency_free(FREQUENCY** pp_freq)
 {
 	if ((pp_freq != NULL) && (*pp_freq != NULL))
@@ -35,6 +64,10 @@ void frequency_free(FREQUENCY** pp_freq)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_get_zeichen
+ * ------------------------------------------------------------------------ */
 unsigned char frequency_get_zeichen(FREQUENCY* p_freq)
 {
 	if (p_freq != NULL)
@@ -44,6 +77,9 @@ unsigned char frequency_get_zeichen(FREQUENCY* p_freq)
 	return 0;
 }
 
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_get_anzahl
+ * ------------------------------------------------------------------------ */
 unsigned int frequency_get_anzahl(FREQUENCY* p_freq)
 {
 	if (p_freq != NULL)
@@ -53,6 +89,10 @@ unsigned int frequency_get_anzahl(FREQUENCY* p_freq)
 	return 0;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_get_left
+ * ------------------------------------------------------------------------ */
 FREQUENCY* frequency_get_left(FREQUENCY* p_freq)
 {
 	if (p_freq != NULL)
@@ -62,6 +102,10 @@ FREQUENCY* frequency_get_left(FREQUENCY* p_freq)
 	return NULL;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_set_left
+ * ------------------------------------------------------------------------ */
 void frequency_set_left(FREQUENCY* p_freq, FREQUENCY* p_new_left)
 {
 	if (p_freq != NULL)
@@ -70,6 +114,10 @@ void frequency_set_left(FREQUENCY* p_freq, FREQUENCY* p_new_left)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_get_right
+ * ------------------------------------------------------------------------ */
 FREQUENCY* frequency_get_right(FREQUENCY* p_freq)
 {
 	if (p_freq != NULL)
@@ -79,6 +127,10 @@ FREQUENCY* frequency_get_right(FREQUENCY* p_freq)
 	return NULL;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_set_right
+ * ------------------------------------------------------------------------ */
 void frequency_set_right(FREQUENCY* p_freq, FREQUENCY* p_new_right)
 {
 	if (p_freq != NULL)
@@ -87,11 +139,19 @@ void frequency_set_right(FREQUENCY* p_freq, FREQUENCY* p_new_right)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_is_leaf
+ * ------------------------------------------------------------------------ */
 BOOL frequency_is_leaf(FREQUENCY* p_freq)
 {
 	return ((p_freq != NULL) && (p_freq->left == NULL) && (p_freq->right == NULL));
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: cmp_frequency_haeufigkeiten
+ * ------------------------------------------------------------------------ */
 int cmp_frequency_haeufigkeiten(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
 {
     if (p_freq1 == NULL) 
@@ -111,6 +171,10 @@ int cmp_frequency_haeufigkeiten(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
                 : -1));
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_print
+ * ------------------------------------------------------------------------ */
 void frequency_print(FREQUENCY* p_freq, int depth, int index)
 {
 	int i = 0;
@@ -132,6 +196,10 @@ void frequency_print(FREQUENCY* p_freq, int depth, int index)
 	
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_get_height
+ * ------------------------------------------------------------------------ */
 unsigned int frequency_get_height(FREQUENCY* p_freq)
 {	
 	return (p_freq == NULL) 
@@ -139,6 +207,10 @@ unsigned int frequency_get_height(FREQUENCY* p_freq)
 			: MAX(frequency_get_height(p_freq->left), frequency_get_height(p_freq->right)) + 1;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: frequency_equals
+ * ------------------------------------------------------------------------ */
 BOOL frequency_equals(FREQUENCY* p_freq1, FREQUENCY* p_freq2)
 {
 	if (p_freq1 == NULL && p_freq2 == NULL)

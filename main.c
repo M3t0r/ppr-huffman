@@ -4,6 +4,21 @@
  * Dieses Projekt realisiert eine einfache Komprimierung von Dateien mit Hilfe 
  * des Huffmann-Algorithmus.
  * 
+ * Komprimierte Dateien haben den folgenden Aufbau:
+ * |--------------------------------------------------------------------------|
+ * | Anzahl genutzter Bits im letzten Byte (3 Bit) | Codebuch (max. 1,09 kB)  |
+ * | -------------------------------------------------------------------------|
+ * | Daten                                                                    |
+ * | -------------------------------------------------------------------------|
+ *
+ * Das Codebuch wiederum enthaelt fuer jedes ASCII-Zeichen folgende Angabe:
+ * Die ersten 3 Bits geben an, wie viele der folgenden Bytes fuer die Anzahl von 
+ * Vorkommen dieses Zeichens benoetigt werden. Sind alle drei Bits 0, so folgt ab
+ * dem naechsten Bit die selbe Angabe fuer das naechste Zeichen.
+ * Dies fuehrt dazu, dass das Codebuch maximal 1,09 kB gross wird, hat allerdings
+ * die Einschraenkung, dass jedes Zeichen maximal 4.294.967.296 mal in der Datei
+ * vorkommen kann.
+ * 
  * 
  * @file
  * Dieses Modul dient zum Starten der (De)Komprimierung einer Datei.
@@ -14,6 +29,7 @@
  * Created on 2. Februar 2012, 15:24
  */
 
+ 
 /*****************************************************************************
  * Includes
  *****************************************************************************/
@@ -25,10 +41,10 @@
 #include "cmdargs.h"
 #include "huffmann.h"
 
+
 /*****************************************************************************
  * Funktionsprototypen
  *****************************************************************************/
-
 /**
  * Gibt einen Hilfetext zur Verwendung des Programms auf dem Bildschirm aus.
  * @param programm Name des Programms
@@ -39,7 +55,14 @@ static void print_help(char* programm);
 /*****************************************************************************
  * Funktionsdefinitionen
  *****************************************************************************/
-
+/**
+ * Hauptfunktion, die beim Starten des Programms aufgerufen wird.
+ * @param argc Anzahl der Parameter
+ * @param argv Die Parameterliste. Der erste Parameter ist immer der Name des 
+               Programms.
+ * @return Liefert 0, falls das Programm erfolgreich durchgelaufen ist,
+           ansonsten einen Wert ungleich 0.
+ */
 int main (int argc, char **argv) {
     cmdargs argumente = parse_args(argc, argv);
     
@@ -90,7 +113,11 @@ int main (int argc, char **argv) {
 }
 
 
-
+/**
+ * Gibt den Hilfetext inlusive einiger beispielhafter Programmaufrufe auf dem
+ * Bildschirm aus.
+ * @param programm Name des Programms.
+ */
 static void print_help(char* programm)
 {
     char *einrueckung;

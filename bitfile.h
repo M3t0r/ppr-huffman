@@ -26,7 +26,7 @@
  * Defintion eines Typs BITFILE und seiner Struktur. 
  */ 
  typedef struct {
-    /* Handle auf die zu verarbeitende Datei.  */
+    /* Handle auf die zu verarbeitende Datei. */
     FILE *fd;
 	
 	/* Puffer fuer das naechste Byte der Datei. */
@@ -109,23 +109,56 @@ void bitfile_write_byte(BITFILE *fd, BYTE d);
 void bitfile_write_bitarray(BITFILE *fd, BITARRAY *ba);
 
 /**
- * 
- * @param fd
- * @return 
+ * Prueft, ob die Datei bereits vollstaendig gelesen wurde.
+ * @param fd Bitfile, dessen Status geprueft werden soll.
+ * @return Liefert TRUE, falls die Datei bereits vollstaendig
+           eingelesen wurde, ansonsten FALSE.
  */
 BOOL bitfile_is_eof(BITFILE *fd);
 
 /**
- * 
- * @param fd
- * @param offset
- * @param origin
- * @return 
+ * Springt innerhalb der Datei an die uebergebene Position.
+ * Dies funktioniert nur fuer Dateien, die im Lese-Modus 
+ * geoeffnet wurden.
+ * @param fd Datei, innerhalb der zur uebergebenen Position
+ *           gewechselt werden soll.
+ * @param offset Gibt die Anzahl der Bytes an, wie weit von origin
+ *               aus der Dateizeiger verschoben wird.
+ * @param origin Gibt den Bezugspunkt an, von wo ab der Schreib-/
+ *               Lesezeiger verschoben werden soll.
+ *               Hierfuer sind folgende Konstanten definiert:
+ *               <table>
+ *                   <tr>
+ *                     <td>SEEK_SET</td>
+ *                     <td>Anfang der Datei</td>	
+ *                   </tr>
+ *                   <tr>
+ *                     <td>SEEK_CUR</td>
+ *                     <td>Aktuelle Position</td>	
+ *                   </tr>
+ *                   <tr>
+ *                     <td>SEEK_END</td>
+ *                     <td>Ende der Datei</td>	
+ *                   </tr>
+ *                </table>
+ * @return Liefert 0, falls das Positionieren erfolgreich war,
+ *         in allen anderen Faellen liefert die Funktionen einen
+ *         Wert ungleich 0.
  */
 int bitfile_seek(BITFILE *fd, long int offset, int origin);
 
+/**
+ * Schreibt den aktuellen Inhalt des Puffers in die Datei.
+ * @param fd Zu schreibendes Bitfile.
+ */
 void bitfile_flush_write(BITFILE *fd);
 
+/**
+ * Prueft, ob der letzte Lesevorgang erfolgreich war.
+ * @param fd Zu pruefendes Bitfile.
+ * return Liefert TRUE, falls beim letzten Lesevorgang ein 
+          Fehler aufgetreten ist, ansonsten FALSE.
+ */
 BOOL bitfile_last_read_was_error(BITFILE *fd);
 
 #endif

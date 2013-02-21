@@ -14,6 +14,9 @@
 /*****************************************************************************
  * Funktionsdefinitionen
  *****************************************************************************/
+ /* ---------------------------------------------------------------------------
+  * Funktion: compress
+  * ------------------------------------------------------------------------ */
 void compress(char *in_filename, char *out_filename)
 {
     int byte = 0;
@@ -55,7 +58,7 @@ void compress(char *in_filename, char *out_filename)
 
     ist_leer = TRUE;
     
-    /* Codebuch aufbauen */
+    /* Anzahlen der einzelnen Bytes in der Eingabedatei ermitteln */
     byte = fgetc(p_input);
     while (byte != EOF)
     {
@@ -65,6 +68,7 @@ void compress(char *in_filename, char *out_filename)
     	byte = fgetc(p_input);
     }
     
+	/* Es muss nur komprimiert werden, wenn die Datei nicht leer ist */
     if (ist_leer == FALSE) 
     {
         unsigned int benutzte_bits;
@@ -72,6 +76,9 @@ void compress(char *in_filename, char *out_filename)
         BYTE erste_byte;
         int i;
         
+		/* Eingabedatei schliessen & oeffnen, damit die Datei erneut von
+		 * vorne gelesen werden kann
+		 */
         fclose(p_input);
         p_input = fopen(in_filename, "rb");
 		if (p_input == NULL)
@@ -81,6 +88,7 @@ void compress(char *in_filename, char *out_filename)
 			exit(EXIT_FAILURE);
 		} 
     
+		/* Codebuch aufbauen */
         p_codebuch = codebuch_new_from_frequency(anzahl_zeichen);
         if (p_codebuch == NULL)
         {
@@ -90,11 +98,12 @@ void compress(char *in_filename, char *out_filename)
         
         /* Ausgabedatei erzeugen */
         
-        /* platz für benutzte_bits am anfang lassen */
+        /* Platz für benutzte_bits am Anfang lassen */
         bitfile_write_bit(p_output, FALSE);
         bitfile_write_bit(p_output, FALSE);
         bitfile_write_bit(p_output, FALSE);
         
+		/* Codebuch schreiben */
         codebuch = codebuch_structure(p_codebuch);
         bitfile_write_bitarray(p_output, codebuch);
         
@@ -102,10 +111,11 @@ void compress(char *in_filename, char *out_filename)
         
         byte = fgetc(p_input);
         
+		/* Byteweise lesen, Byte komprimieren und wegschreiben */
         do
         {
             code = codebuch_code_for_char(p_codebuch, byte);
-            
+			
             if(code == NULL)
             {
                 fprintf(stderr, "Es ist ein Fehler aufgetreten.\n");
@@ -118,8 +128,11 @@ void compress(char *in_filename, char *out_filename)
             
             byte = fgetc(p_input);
         } while (byte != EOF);
-        
         bitfile_flush_write(p_output);
+		
+		/* Fuege am Anfang der Datei ein, wie viele Bits des letzten Bytes
+		 * Nutzdaten sind.
+		 */
         bitfile_seek(p_output, 0, SEEK_SET);
         erste_byte = benutzte_bits;
         
@@ -143,6 +156,10 @@ void compress(char *in_filename, char *out_filename)
     DPRINT("Eingabedatei wurde geschlossen\n");
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: decompress
+ * ------------------------------------------------------------------------ */
 void decompress(char *in_filename, char *out_filename)
 {
     BITFILE *p_input;
@@ -175,7 +192,7 @@ void decompress(char *in_filename, char *out_filename)
     } 
     DPRINT("Ausgabedatei geoeffnet!\n");
     
-    
+    /* Wie viele Bits des letzten Bytes enthalten Nutzdaten */
     benutzte_bits = bitfile_read_bit(p_input) << 2 | bitfile_read_bit(p_input) << 1 | bitfile_read_bit(p_input);
     if(bitfile_last_read_was_error(p_input))
     {
@@ -192,18 +209,22 @@ void decompress(char *in_filename, char *out_filename)
         unsigned int anzahl_zeichen[256];
         int i;
 
+		/* Initialisiere anzahl_zeichen Vektor */
         memset(anzahl_zeichen, 0, sizeof(unsigned int) * 256);
         
-        /* häufigkeit der zeichen einlesen */
+        /* Haeufigkeit der einzelnen Zeichen einlesen */
         for(i = 0; i < 256; i++)
         {
-            int anzahl_byte = bitfile_read_bit(p_input) << 2 | bitfile_read_bit(p_input) << 1 | bitfile_read_bit(p_input);
+            int anzahl_byte = bitfile_read_bit(p_input) << 2 
+			                 | bitfile_read_bit(p_input) << 1 
+							 | bitfile_read_bit(p_input);
             for(; anzahl_byte > 0; anzahl_byte--)
             {
                 anzahl_zeichen[i] = (anzahl_zeichen[i] << 8) | bitfile_read_byte(p_input);
             }            
         }
         
+		/* Erstelle das Codebuch */
         p_codebuch = codebuch_new_from_frequency(anzahl_zeichen);
         pipeline = bitarray_new();
                 

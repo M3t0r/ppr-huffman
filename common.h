@@ -46,7 +46,7 @@ typedef unsigned char BYTE;
 #endif
 
 /**
- * Definiert ein Makro zur Debugausgabe.
+ * Definiert das Makro DPRINT zur Ausgabe von Debugmeldungen auf dem Bildschirm
  */
 #ifdef DEBUG
     #define DPRINT(E)		printf(E)

@@ -6,15 +6,24 @@
 /*****************************************************************************
  * Strukturdefintionen
  *****************************************************************************/
-struct _CODE {
+/**
+ * Struktur zum Speichern eines Zeichens und des zughoerigen Codes.
+ */
+ struct _CODE {
+    /* Codiertes Zeichen */
 	unsigned char 	zeichen;
+	
+	/* Code des Zeichens*/
 	BITARRAY* 		code;
 };
 
 /*****************************************************************************
  * Funktionsdefinitionen
  *****************************************************************************/
-CODE* code_new(unsigned char z, BITARRAY* p_bitarray)
+/* ---------------------------------------------------------------------------
+ * Funktion: code_new
+ * ------------------------------------------------------------------------ */
+ CODE* code_new(unsigned char z, BITARRAY* p_bitarray)
 {
 	unsigned int i;
 	CODE* retval 	= (CODE*)malloc(sizeof(CODE));
@@ -34,6 +43,10 @@ CODE* code_new(unsigned char z, BITARRAY* p_bitarray)
 	return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: code_free
+ * ------------------------------------------------------------------------ */
 void code_free(CODE** pp_code)
 {
 	if ((pp_code != NULL) && (*pp_code != NULL))
@@ -47,6 +60,10 @@ void code_free(CODE** pp_code)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: code_get_zeichen
+ * ------------------------------------------------------------------------ */
 unsigned char code_get_zeichen(CODE* p_code)
 {
 	if (p_code == NULL)
@@ -57,6 +74,10 @@ unsigned char code_get_zeichen(CODE* p_code)
 	return p_code->zeichen;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: code_get_code
+ * ------------------------------------------------------------------------ */
 BITARRAY* code_get_code(CODE* p_code)
 {
 	if (p_code == NULL)
@@ -67,6 +88,10 @@ BITARRAY* code_get_code(CODE* p_code)
 	return p_code->code;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: cmp_codes_zeichen
+ * ------------------------------------------------------------------------ */
 int cmp_codes_zeichen(CODE* p_code1, CODE* p_code2)
 {
 	if (p_code1 == NULL || p_code1->code == NULL)
@@ -86,6 +111,10 @@ int cmp_codes_zeichen(CODE* p_code1, CODE* p_code2)
     			: -1));
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: code_equals
+ * ------------------------------------------------------------------------ */
 BOOL code_equals(CODE* c1, CODE* c2)
 {
 	if (c1->zeichen != c2->zeichen)

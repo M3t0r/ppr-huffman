@@ -24,8 +24,13 @@
  * Definiert den Typ BITARRAY.
  */
 typedef struct {
+    /* Folge von Bytes */
     BYTE *data;
+	
+	/* Groesse des Vektors data in bit */
     unsigned int capacity;
+	
+	/* Anzahl der Bits innerhalb des Bitarrays */
     unsigned int length;
 } BITARRAY;
 
@@ -45,7 +50,7 @@ BITARRAY *bitarray_new();
 void bitarray_free(BITARRAY **ba);
 
 /**
- * Fuegt ein Bit HINTEN an das Bitarray an.
+ * Fuegt ein Bit hinten an das Bitarray an.
  * @param ba Bitarray, das erweitert werden soll.
  * @param d Einzufuegendes Bit. TRUE entspricht 1, FALSE ist 0.
  */
@@ -74,7 +79,6 @@ unsigned int bitarray_length(BITARRAY *ba);
 
 /**
  * Gibt das Bit an der Position index zurueck.
- * returns the bit with the bit-based index
  * @param ba Das Bitarray, aus dem gelesen werden soll.
  * @param index Gibt an, das wie vielte Bit gelesen werden soll.
  * @return Das gelesene Bit. TRUE entspricht 1, FALSE ist 0.
@@ -89,12 +93,34 @@ BOOL bitarray_get_bit(BITARRAY *ba, int index);
  */
 BYTE bitarray_get_byte(BITARRAY *ba, int index);
 
+/**
+ * Fuegt zwei Bitarrays zusammen. ba2 wird dabei hinter ba1
+ * eingefuegt.
+ * @param ba1 Der vordere Teil des neuen Bitarrays. Dient auch gleichzeitig 
+ *            als Pointer auf das zusammengefuegte Array.
+ * @param ba2 Der hintere Teil des neuen Bitarrays.
+ */
 void bitarray_merge(BITARRAY *ba1, BITARRAY *ba2);
 
+/**
+ * Entfernt die vordersten Bits aus dem Bitarray.
+ * @param ba Bitarray, dessen vorder Teil entfernt werden soll.
+ * @param length Anzahl der zu entfernenden Bits.
+ */
 void bitarray_remove_front(BITARRAY *ba, int length);
 
+/**
+ * Gibt den Inhalt des Bitarrays als Bitfolge in einer Datei aus.
+ * @param ba Bitarray, das ausgegeben werden soll.
+ * @param stream Datei, in die das Bitarray geschrieben werden soll.
+ * @param print_prefix Gibt an, ob das Prefix 0b ausgegeben werden soll.
+ */
 void bitarray_print_adv(BITARRAY *ba, FILE *stream, BOOL print_prefix);
 
+/**
+ * Gibt ein Bitarray als Bitfolge auf dem Bilsdschirm aus.
+ * @param ba Bitarray, das ausgegeben werden soll.
+ */
 void bitarray_print(BITARRAY *ba);
 
 /**

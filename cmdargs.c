@@ -4,6 +4,7 @@
 #include "cmdargs.h"
 #include <string.h>
 
+
 /*****************************************************************************
 * Funktionsprototypen
  *****************************************************************************/
@@ -19,16 +20,22 @@
  */
 static cmdargs new_cmdargs(void);
 
+
 /*****************************************************************************
-* Funktionsdefinitionen
+ * Funktionsdefinitionen
  *****************************************************************************/
+/* ---------------------------------------------------------------------------
+ * Funktion: parse_args
+ * ------------------------------------------------------------------------ */
 cmdargs parse_args(int argc, char **argv)
 {
     cmdargs arguments = new_cmdargs();
-    
-    
+
     if (argc >= 2 && strcmp(argv[1], "-h") == 0)
     {
+	    /* Ist der Paramter -h gesetzt, darf es keine weiteren Parameter 
+		 * geben 
+		 */
         if (argc == 2)
         {
             arguments.zeige_hilfe = TRUE;
@@ -77,6 +84,7 @@ cmdargs parse_args(int argc, char **argv)
     } 
     else 
     {
+		/* Es wurden keine Parameter angegeben */
         arguments.fehlermeldung = FEHLER_ZU_WENIG_ARGUMENTE;
         arguments.ungueltig = TRUE;   
     }
@@ -85,6 +93,10 @@ cmdargs parse_args(int argc, char **argv)
     return arguments;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: cmdargs_new
+ * ------------------------------------------------------------------------ */
 static cmdargs new_cmdargs()
 {
     cmdargs arguments;

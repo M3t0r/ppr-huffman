@@ -8,25 +8,57 @@
 /*****************************************************************************
  * Konstanten
  *****************************************************************************/
-#define STEPS	10
+/**
+ * Schrittweite, mit der der Heap vergroessert wird.
+ */
+ #define STEPS	10
 
 
 /*****************************************************************************
  * Strukturdefinitionen
  *****************************************************************************/
-struct _HEAP 
+/**
+ * Struktur fuer den Heap.
+ */
+ struct _HEAP 
 {
+    /* Groesse des Heaps */
     int size;
+	
+	/* Anzahl der genutzten Elemente innerhalb des Heaps */
     int used;
+	
+	/* Funktionszeiger auf eine Funktion zum vergleichen zweier Heap-Elemente */ 
     CMP_FCT comp;
+	
+	/* Pointer auf die Elemente des Heaps */
     void** elements;
 };
 
 
 /*****************************************************************************
+ * Funktionsprototypen
+ *****************************************************************************/
+/**
+ * Vergroessert den Heap um STEP Elemente.
+ * @param p_heap Der zu vergroessernde Heap.
+ */
+static void grow(HEAP* p_heap);
+
+/**
+ * Verkleinert den Heap.
+ * @param p_heap Der zu verkleinernde Heap.
+ */
+static void shrink(HEAP* p_heap);
+
+
+/*****************************************************************************
  * Funktionsdefinitionen
  *****************************************************************************/
-HEAP* heap_new(CMP_FCT cmp_f) 
+/* ---------------------------------------------------------------------------
+ * Funktion: heap_new
+ * ------------------------------------------------------------------------ */
+ HEAP* heap_new(CMP_FCT cmp_f) 
 {
     HEAP* retval = (HEAP*)malloc(sizeof(HEAP));
     ASSERT_ALLOC(retval);
@@ -43,6 +75,10 @@ HEAP* heap_new(CMP_FCT cmp_f)
     return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: heap_free
+ * ------------------------------------------------------------------------ */
 void heap_free(HEAP** pp_heap)
 {
 	if ((pp_heap != NULL) && (*pp_heap != NULL) && ((*pp_heap)->elements != NULL)) 
@@ -53,10 +89,10 @@ void heap_free(HEAP** pp_heap)
     }
 }
 
-/**
- * Vergrößert den Heap.
- * @param p_heap HEAP* Der Heap.
- */
+
+/* ---------------------------------------------------------------------------
+ * Funktion: grow
+ * ------------------------------------------------------------------------ */
 static void grow(HEAP* p_heap) 
 {    
     if ((p_heap != NULL) && (p_heap->elements != NULL) && (p_heap->used >= p_heap->size)) 
@@ -67,10 +103,10 @@ static void grow(HEAP* p_heap)
     }
 }
 
-/**
- * Verkleinert den Heap.
- * @param p_heap HEAP* Der Heap.
- */
+
+/* ---------------------------------------------------------------------------
+ * Funktion: shrink
+ * ------------------------------------------------------------------------ */
 static void shrink(HEAP* p_heap) 
 {
 	if ((p_heap != NULL) && (p_heap->elements != NULL) && ((p_heap->size - STEPS) > p_heap->used)) 
@@ -81,6 +117,10 @@ static void shrink(HEAP* p_heap)
     }
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: heap_push
+ * ------------------------------------------------------------------------ */
 void heap_push(HEAP* p_heap, void* element) 
 {	
     if ((p_heap != NULL) && (p_heap->elements != NULL)) 
@@ -103,6 +143,10 @@ void heap_push(HEAP* p_heap, void* element)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: heap_pop
+ * ------------------------------------------------------------------------ */
 void* heap_pop(HEAP* p_heap) 
 {
     void* retval = NULL;
@@ -143,6 +187,10 @@ void* heap_pop(HEAP* p_heap)
     return retval;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: heap_get_size
+ * ------------------------------------------------------------------------ */
 int heap_get_size(HEAP* p_heap) 
 {    
     if (p_heap != NULL) 
@@ -153,6 +201,10 @@ int heap_get_size(HEAP* p_heap)
     return -1;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: heap_contains
+ * ------------------------------------------------------------------------ */
 int heap_contains(HEAP* p_heap, void* element, CMP_FCT cmp_f)
 {	
 	if ((p_heap != NULL) && (p_heap->elements != NULL)) 
@@ -169,6 +221,10 @@ int heap_contains(HEAP* p_heap, void* element, CMP_FCT cmp_f)
 	return -1;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Funktion: heap_get_element
+ * ------------------------------------------------------------------------ */
 void* heap_get_element(HEAP* p_heap, int index) 
 {
 	index++;
