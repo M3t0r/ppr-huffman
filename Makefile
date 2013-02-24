@@ -14,14 +14,12 @@ DOXYGEN_PATH 	= doxygen
 DOXYGEN_FILE 	= $(DOXYGEN_PATH)/html/index.html
 DOXYGEN_CFG 	= ./doxygen.cfg
 PNG				= ./struktur.png
+ZIPFILE			= ./ppr_p10.zip
+ZIPFLAGS		= -v $(ZIPFILE) ./* ./tests/* --exclude="vorlagen/" --exclude="build/" --exclude="README.md" --exclude="bitdump.c"
 
 # das endprodukt linken
 $(OUTPUT): $(addprefix $(BUILDDIR), $(addsuffix .o, $(SRC)))
 # alles zusammen linken, $^ sind alle vorraussetzungen, $@ das ziel
-	@echo "  (LD) $^ -> $@"
-	@$(LD) $(LDFLAGS) $^ -o $@
-
-bitdump: $(addprefix $(BUILDDIR), $(addsuffix .o, bitdump.c bitfile.c bitarray.c))
 	@echo "  (LD) $^ -> $@"
 	@$(LD) $(LDFLAGS) $^ -o $@
 
@@ -71,10 +69,14 @@ clean:
 	-@rm -rf tests/codebuch tests/frequency tests/heap tests/test tests/code tests/bitarray tests/bitfile tests/*.dSYM tests/bitfile_write.txt
 	-@rm -rf $(DOXYGEN_PATH)
 	-@rm -rf $(SPLINT_LOG)
+	-@rm -rf $(ZIPFILE)
 	-@echo "clean!"
 	
 debug: clean
 	@make DEBUG=1
+	
+zip: clean
+	zip $(ZIPFLAGS)
 
 
 .PHONY: clean debug test

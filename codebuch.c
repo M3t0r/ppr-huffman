@@ -17,7 +17,9 @@
 /*****************************************************************************
  * Strukturdefinitionen
  *****************************************************************************/
-
+/**
+ * Struktur eines Codebuchs.
+ */
 struct _CODEBUCH 
 {
 	/* Baum der einzelnen Frequenzen */
