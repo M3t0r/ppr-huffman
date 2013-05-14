@@ -13,6 +13,9 @@ SRC 			= bitarray.c bitfile.c cmdargs.c code.c codebuch.c frequency.c heap.c huf
 DOXYGEN_PATH 	= doxygen
 DOXYGEN_FILE 	= $(DOXYGEN_PATH)/html/index.html
 DOXYGEN_CFG 	= ./doxygen.cfg
+PNG				= ./struktur.png
+ZIPFILE			= ./ppr_p10.zip
+ZIPFLAGS		= -v $(ZIPFILE) ./* ./tests/* --exclude="vorlagen/" --exclude="build/" --exclude="README.md" --exclude="bitdump.c"
 
 # das endprodukt linken
 $(OUTPUT): $(addprefix $(BUILDDIR), $(addsuffix .o, $(SRC)))
@@ -20,21 +23,18 @@ $(OUTPUT): $(addprefix $(BUILDDIR), $(addsuffix .o, $(SRC)))
 	@echo "  (LD) $^ -> $@"
 	@$(LD) $(LDFLAGS) $^ -o $@
 
-bitdump: $(addprefix $(BUILDDIR), $(addsuffix .o, bitdump.c bitfile.c bitarray.c))
-	@echo "  (LD) $^ -> $@"
-	@$(LD) $(LDFLAGS) $^ -o $@
-
-all: clean splint $(DOXYGEN_FILE) $(OUTPUT)
+all: clean splint doxygen $(OUTPUT)
 
 splint:
 	@echo "Prüfe Dateien mit splint"
 	@splint $(SFLAGS) $(SRC) $(filter-out main.h,$(SRC:.c=.h)) | tee $(SPLINT_LOG)
 	
-doxygen : $(DOXYGEN_FILE)
+doxygen: $(DOXYGEN_FILE)
 
-$(DOXYGEN_FILE) : *.c *.h
+$(DOXYGEN_FILE): *.c *.h
 	@echo "Erzeuge Doxygen-Dokumentation"
 	@doxygen $(DOXYGEN_CFG)
+	@cp $(PNG) $(DOXYGEN_PATH)/html/
 
 # einzelne quellen compilen
 $(BUILDDIR)%.c.o: %.c
@@ -69,10 +69,14 @@ clean:
 	-@rm -rf tests/codebuch tests/frequency tests/heap tests/test tests/code tests/bitarray tests/bitfile tests/*.dSYM tests/bitfile_write.txt
 	-@rm -rf $(DOXYGEN_PATH)
 	-@rm -rf $(SPLINT_LOG)
+	-@rm -rf $(ZIPFILE)
 	-@echo "clean!"
 	
 debug: clean
 	@make DEBUG=1
+	
+zip: clean
+	zip $(ZIPFLAGS)
 
 
 .PHONY: clean debug test

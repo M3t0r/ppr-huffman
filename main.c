@@ -3,13 +3,25 @@
  * 
  * Dieses Projekt realisiert eine einfache Komprimierung von Dateien mit Hilfe 
  * des Huffmann-Algorithmus.
- * 
- * Komprimierte Dateien haben den folgenden Aufbau:
- * |--------------------------------------------------------------------------|
- * | Anzahl genutzter Bits im letzten Byte (3 Bit) | Codebuch (max. 1,09 kB)  |
- * | -------------------------------------------------------------------------|
- * | Daten                                                                    |
- * | -------------------------------------------------------------------------|
+ * <br>
+ * Komprimierte Dateien haben folgenden Aufbau:<br>
+ * <table border = '1'>
+ *	<tr>
+ *		<td width = '200px'>
+ *			Anzahl genutzer Bits<br>
+ 			im letzten Byte (3 Bits)
+ *		</td>
+ *		<td width = '200px'>
+ *			Codebuch
+ *		</td>
+ *	<tr>
+ *		<td height = '50px' colspan = '2'>
+ *			Daten
+ *		</td>
+ *	</tr>
+ * </table>
+ * (max. 1,09 kB)
+ *
  *
  * Das Codebuch wiederum enthaelt fuer jedes ASCII-Zeichen folgende Angabe:
  * Die ersten 3 Bits geben an, wie viele der folgenden Bytes fuer die Anzahl von 
@@ -18,7 +30,8 @@
  * Dies fuehrt dazu, dass das Codebuch maximal 1,09 kB gross wird, hat allerdings
  * die Einschraenkung, dass jedes Zeichen maximal 4.294.967.296 mal in der Datei
  * vorkommen kann.
- * 
+ *
+ * <img src = './struktur.png' alt = 'Struktur' width = '500px' height = '500px'> 
  * 
  * @file
  * Dieses Modul dient zum Starten der (De)Komprimierung einer Datei.
