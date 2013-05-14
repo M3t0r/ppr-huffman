@@ -127,6 +127,7 @@ void compress(char *in_filename, char *out_filename)
             bitfile_write_bitarray(p_output, code);
             
             byte = fgetc(p_input);
+	    bitarray_free(&code);
         } while (byte != EOF);
         
         bitfile_flush_write(p_output);
